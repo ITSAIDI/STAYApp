@@ -1,5 +1,7 @@
 'use client'
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
 import { viga,poppins } from "@/fonts";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHouse,faClock,faHexagonNodes,faMapLocationDot,faLightbulb } from '@fortawesome/free-solid-svg-icons';
@@ -7,8 +9,15 @@ import Image from 'next/image'
 
 
 
+
 export default function SideBar() {
   const [activeTab, setActiveTab] = useState('Home');
+  const router = useRouter();
+
+  function handleClick(theTab){
+   setActiveTab(theTab);
+   router.replace(`/${theTab.toLowerCase().replace(' ','_')}`)
+  }
 
   const tabs = [
     'Home',
@@ -25,7 +34,7 @@ export default function SideBar() {
     faLightbulb,
  ]
   return (
-    <div className='bg-gray-200 w-[20%] flex flex-col items-center p-2 m-2 rounded-lg'>
+    <div className='bg-gray-200 w-[20%] flex flex-col items-center p-2  rounded-lg'>
 
       {/*Head*/}
       <div className='flex flex-row items-center mb-30'>
@@ -48,13 +57,13 @@ export default function SideBar() {
         {tabs.map((tab,index) => (
            <div
            key={tab}
-           className={`${activeTab === tab ? 'text-green-900 font-semibold' : 'text-gray-500'} hover:text-green-900  transition-colors`}
+           className={`${activeTab === tab ? 'text-green-900' : 'text-gray-500'} hover:text-green-900  transition-colors`}
            >
                 <FontAwesomeIcon 
                 className={`${activeTab === tab ? 'scale-120' : 'scale-100'} transition-transform duration-400 `}
                 icon={icons[index]} />
                 <button
-                    onClick={() => setActiveTab(tab)}
+                    onClick={() => handleClick(tab)}
                     className="px-2 py-1"
                 >
                 {tab}

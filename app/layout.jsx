@@ -1,6 +1,9 @@
 import "./globals.css";
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import { config } from '@fortawesome/fontawesome-svg-core';
+import SideBar from "@/app/sideBar";
+
+
 config.autoAddCss = false;
 
 export const metadata = {
@@ -12,7 +15,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="h-full">
-      <body className="h-full">{children}</body>
+      <body className="h-full flex flex-row p-3 gap-3">
+        <SideBar />
+        <div className="flex-grow bg-gray-200 rounded-lg">
+          {children}
+        </div>
+  
+      </body>
     </html>
   )
 }
