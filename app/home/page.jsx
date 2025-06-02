@@ -1,7 +1,14 @@
-import React from 'react'
+import HomeMain from "@/components/home/homeMain"
+import SideBar from "@/components/home/sideBar"
+
+
 
 export default function home() {
   return (
-    <div>home</div>
+    <div className="flex  h-full">
+      <SideBar />
+      <HomeMain />
+    </div>
+
   )
 }
