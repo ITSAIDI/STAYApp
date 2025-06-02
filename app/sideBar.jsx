@@ -39,6 +39,7 @@ export default function SideBar() {
       {/*Head*/}
       <div className='flex flex-row items-center mb-30'>
             <Image
+            className='w-16 h-16  xl:w-20 xl:h-20'
             src="/logo.png" width={50} height={50}  alt="logo of STAY app" quality={100}
             />
             <div className={`${poppins.className}`}>
@@ -52,7 +53,7 @@ export default function SideBar() {
 
       <div className={`${viga.className} px-2 py-1 text-left flex flex-col gap-3`}>
        
-        <h1 className='mb-3'>MENU</h1>
+        <h1 className='mb-3 xl:text-xl'>MENU</h1>
 
         {tabs.map((tab,index) => (
            <div
@@ -64,7 +65,7 @@ export default function SideBar() {
                 icon={icons[index]} />
                 <button
                     onClick={() => handleClick(tab)}
-                    className="px-2 py-1"
+                    className="px-2 py-1 xl:text-xl"
                 >
                 {tab}
                 </button>
