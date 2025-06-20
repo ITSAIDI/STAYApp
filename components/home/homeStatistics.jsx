@@ -6,14 +6,14 @@ export default async function HomeStatistics() {
 
   const stats = await res.json();
 
-  console.log('stats :',stats)
+  //console.log('stats :',stats)
 
   const boxes = [
     {
       textColor: 'text-white',
       bgColor: 'bg-green1',
       number: stats.numChannels,
-      title: 'Number of channels',
+      title: 'Number of pertinente channels',
       icon: faTv
     },
     {

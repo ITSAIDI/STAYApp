@@ -19,7 +19,7 @@ export async function GET() {
     const client = await pool.connect()
 
     const [numChannels, numVideos, numComments] = await Promise.all([
-      client.query('SELECT COUNT(*) FROM chaines'),
+      client.query('SELECT COUNT(*) FROM chaines where pertinente = true'),
       client.query('SELECT COUNT(*) FROM videos'),
       client.query('SELECT COUNT(*) FROM commentaires'),
     ])
