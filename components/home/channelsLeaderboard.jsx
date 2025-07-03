@@ -5,9 +5,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 import ChannelSection from "./channelSection"
 
-import { viga } from "@/fonts"
+import { viga,poppins } from "@/fonts"
 
 import { useEffect, useState,useRef } from "react"
+import { Combobox } from "./combobox"
 
 
 
@@ -18,9 +19,8 @@ export default function ChannelsLeaderboard() {
   const [channels,setChannels] = useState([])
   const [query,setQuery] = useState('')
 
-  console.log('channelsInit :',channelsInit.current)
-  console.log('channles :',channels)
-  console.log('query :',query)
+  //console.log('statChoice :',statChoice)
+
 
   async function initChannels()
   {
@@ -34,7 +34,7 @@ export default function ChannelsLeaderboard() {
       console.log('Failing while fetching channels ',error)
     }
   }
-  async function getSuggestions() 
+  async function getSearch() 
   {
     if (!query.trim()) {
         setChannels(channelsInit.current)
@@ -60,9 +60,11 @@ export default function ChannelsLeaderboard() {
 
   useEffect(()=>{
     if (debounceTimeout.current) clearTimeout(debounceTimeout.current) // clear the previous timing
-     debounceTimeout.current = setTimeout(() => {
-    getSuggestions()
-     }, 300) // Wait 300 ms before sending the request to avoid extra requests and delayed ones.
+    debounceTimeout.current = setTimeout(
+                                          () => {getSearch()}, 
+                                          300
+                                        ) 
+    // Wait 300 ms before sending the request to avoid extra and unuseful requests.
   },[query])
 
   return (
@@ -72,13 +74,20 @@ export default function ChannelsLeaderboard() {
         <h1 className = {`${viga.className} text-xl text-green1`}>Channels</h1>
 
         {/* Search area */}
-         <input
-        type="text"
-        placeholder="search for a channel by name..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        className="w-full px-4 py-2 border rounded"
-         />
+        <div className="flex flex-row px-4 py-1 border rounded-full border-green1 text-sm mt-2 mb-2 gap-1">
+          <FontAwesomeIcon icon={faMagnifyingGlass} className="text-2xl text-green1"  />
+          <input
+          type="text"
+          placeholder="search for a channel by name..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className= {`${poppins.className} w-full focus:outline-none`}
+          />
+        </div>
+        
+        {/* Channels Sorting Combobox*/}
+
+        <Combobox value = {statChoice} setValue={setStatChoice} />
 
         {/* Channels list */}
         <div className="flex flex-col items-start max-h-60 overflow-y-scroll scrollbar scrollbar-thumb-green1 scrollbar-track-white overflow-x-hidden">
@@ -96,7 +105,7 @@ export default function ChannelsLeaderboard() {
               statChoice = {statChoice}
               channelStats = {
                   {
-                    subscibers:{number : channel.nombre_abonnes_total , icon : faUser},
+                    subscribers:{number : channel.nombre_abonnes_total , icon : faUser},
                     videos    :{number : channel.nombre_videos_total , icon : faPlay},
                     views     :{number : channel.nombre_vues_total , icon : faEye},
                     
