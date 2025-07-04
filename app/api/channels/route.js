@@ -15,7 +15,7 @@ export async function GET() {
     try 
     {
         const client = await pool.connect() 
-        const results = await client.query("select * from chaines  inner join chaines_metriques on chaines.id_chaine =  chaines_metriques.id_chaine order by nombre_vues_total desc limit 10;")
+        const results = await client.query("select * from chaines  inner join chaines_metriques on chaines.id_chaine =  chaines_metriques.id_chaine limit 10;")
         client.release()
 
         return NextResponse.json(results.rows);

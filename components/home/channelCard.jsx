@@ -32,14 +32,14 @@ export default function ChannelCard({profileURL,channelName,creationDate,label,c
             {/* Stats */}
             <div className={`flex flex-col gap-1 ${poppins.className}`}>
 
-                {/* subscibers */}
+                {/* subscribers */}
                 <div className= 'text-gray-500 flex flex-row gap-2 items-baseline'>
 
-                    <FontAwesomeIcon icon={channelStats['subscibers']['icon']} />
+                    <FontAwesomeIcon icon={channelStats['subscribers']['icon']} />
                     <h1 className={`${viga.className}`}>Number of subscribers</h1>
                 
                 </div>
-                <p>{new Intl.NumberFormat('fr-FR').format(channelStats['subscibers']['number'])}</p>
+                <p>{new Intl.NumberFormat('fr-FR').format(channelStats['subscribers']['number'])}</p>
                 
                 {/* views */}
                 <div className= 'text-gray-500 flex flex-row gap-2 items-baseline'>

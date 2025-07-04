@@ -10,6 +10,7 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons'
 
 
 export default function ChannelSection({order,profileURL,channelName,creationDate,label,statChoice,channelStats,bio}) {
+  const safeChoice = statChoice || 'views'
   const [showCard,setShowCard] = useState(false)
   return (
     <div className='flex flex-col items-center hover:bg-gray-100 transition-colors duration-300 cursor-pointer w-full rounded-lg'>
@@ -36,8 +37,8 @@ export default function ChannelSection({order,profileURL,channelName,creationDat
         <div className='flex flex-col items-end gap-1'>
               {label ? <Tooltip text={'Pertinent'} styleText={'bg-green-300 text-green1 px-1.5 py-0  rounded-xl text-[14px]'} message={'Pertinent to the self-sufficiency phenomenon'} /> : <p className='bg-red-300 text-green1 px-1.5 py-0 rounded-xl text-[14px]'>Not pertinent</p>}
               <div className='flex flex-row gap-1 items-baseline text-[14px]'>
-                <FontAwesomeIcon className='text-green1' icon={channelStats[statChoice]['icon']}/>
-                <p className='truncate max-w-20 text-gray-400'>{new Intl.NumberFormat('fr-FR').format(channelStats[statChoice]['number'])}</p>
+                <FontAwesomeIcon className='text-green1' icon={channelStats[safeChoice]['icon']}/>
+                <p className='truncate max-w-20 text-gray-400'>{new Intl.NumberFormat('fr-FR').format(channelStats[safeChoice]['number'])}</p>
               </div>
             
         </div>
@@ -47,7 +48,6 @@ export default function ChannelSection({order,profileURL,channelName,creationDat
       {
         showCard && (
           <div 
-          onClick={()=>{setShowCard(false)}}
           className='fixed inset-0 bg-black/50 flex items-center justify-center z-50 transition-opacity duration-300 ease-in-out'>
             <div className='relative bg-white rounded-lg shadow-xl w-[48%] p-2'>
               <button

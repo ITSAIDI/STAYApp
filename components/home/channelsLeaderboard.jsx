@@ -9,18 +9,49 @@ import { viga,poppins } from "@/fonts"
 
 import { useEffect, useState,useRef } from "react"
 import { Combobox } from "./combobox"
+import { Calendar22 } from "./datePicker"
 
+
+const sortingList = [
+  {
+    value: "views",
+    label: "Number of views",
+  },
+  {
+    value: "subscribers",
+    label: "Number of subscribers",
+  },
+  {
+    value: "videos",
+    label: "Number of videos",
+  }
+]
+
+
+const orderingList = [
+  {
+    value: "desc",
+    label: "Descending",
+  },
+  {
+    value: "asc",
+    label: "Ascending",
+  }
+]
 
 
 export default function ChannelsLeaderboard() {
-  const [statChoice,setStatChoice] = useState('views')
+  const [statChoice,setStatChoice] = useState("")
+  const [order,setOrder] = useState("")
+  
   let channelsInit = useRef([]) // useRef to preserves the channelsInit after re-redering of  channelsLeaderBoard
   const debounceTimeout = useRef(null)
   const [channels,setChannels] = useState([])
   const [query,setQuery] = useState('')
+  
 
+  //console.log('order :',order)
   //console.log('statChoice :',statChoice)
-
 
   async function initChannels()
   {
@@ -55,9 +86,33 @@ export default function ChannelsLeaderboard() {
     }
   }
 
+  async function getSorting() 
+  {
+    console.log('getSorting i hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
+    try 
+    {
+      const res = await fetch('/api/channels/sorting',{
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ statChoice, order }),
+      })
+      const data = await res.json()
+
+      console.log('Sorted Channels',data)
+
+      setChannels(data)
+      
+    } 
+    catch (error) 
+    {
+      setChannels(channelsInit.current)
+      console.log('Failing while sorting ',error)
+    }
+  }
+
 
   useEffect(()=>{initChannels();},[])
-
+  
   useEffect(()=>{
     if (debounceTimeout.current) clearTimeout(debounceTimeout.current) // clear the previous timing
     debounceTimeout.current = setTimeout(
@@ -66,9 +121,17 @@ export default function ChannelsLeaderboard() {
                                         ) 
     // Wait 300 ms before sending the request to avoid extra and unuseful requests.
   },[query])
+  
+  useEffect(() => {
+    if(statChoice !== "" && order !== "")
+    {
+      getSorting();
+    }
+    
+  }, [statChoice, order])
 
   return (
-    <div className='flex flex-col bg-white rounded-lg mt-2 p-2 w-[50%]'>
+    <div className='flex flex-col bg-white rounded-lg mt-2 p-2 w-[50%] h-full'>
 
         {/* Title */}
         <h1 className = {`${viga.className} text-xl text-green1`}>Channels</h1>
@@ -85,12 +148,25 @@ export default function ChannelsLeaderboard() {
           />
         </div>
         
-        {/* Channels Sorting Combobox*/}
+        {/* Channels Sorting */}
+        <div className="flex flex-row gap-2 w-fit mb-3">
 
-        <Combobox value = {statChoice} setValue={setStatChoice} />
+            <Combobox value = {statChoice} setValue={setStatChoice} itemsList={sortingList} text={"Sort channels"}/>
+            <Combobox value = {order} setValue={setOrder} itemsList={orderingList} text={"Select order"} />
+
+        </div>
+
+        {/* The Creation date range's choice  */}
+        <div className="flex flex-row gap-2 w-fit items-center mb-3">
+
+          <Calendar22 title={'Creation Date (From)'}/>
+          <Calendar22 title={'Creation Date (To)'}/>
+          
+        </div>
+
 
         {/* Channels list */}
-        <div className="flex flex-col items-start max-h-60 overflow-y-scroll scrollbar scrollbar-thumb-green1 scrollbar-track-white overflow-x-hidden">
+        <div className="flex flex-col items-start max-h-56 overflow-y-scroll scrollbar scrollbar-thumb-green1 scrollbar-track-white overflow-x-hidden">
           {
             channels.map((channel,index)=>
             (
@@ -126,7 +202,7 @@ export default function ChannelsLeaderboard() {
           && 
           <div className="flex flex-col items-center text-gray-300 mt-3">
             <FontAwesomeIcon icon={faCircleExclamation} className="text-3xl"  />
-            <h1>No results</h1>
+            <h1>No channels</h1>
           </div>
           
         }
