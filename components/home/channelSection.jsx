@@ -10,7 +10,7 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons'
 
 
 export default function ChannelSection({order,profileURL,channelName,creationDate,label,statChoice,channelStats,bio}) {
-  const safeChoice = statChoice || 'views'
+  const safeChoice = statChoice || 'nombre_vues_total'
   const [showCard,setShowCard] = useState(false)
   return (
     <div className='flex flex-col items-center hover:bg-gray-100 transition-colors duration-300 cursor-pointer w-full rounded-lg'>

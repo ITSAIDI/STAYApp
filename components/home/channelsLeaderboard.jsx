@@ -14,15 +14,15 @@ import { Calendar22 } from "./datePicker"
 
 const sortingList = [
   {
-    value: "views",
+    value: "nombre_vues_total",
     label: "Number of views",
   },
   {
-    value: "subscribers",
+    value: "nombre_abonnes_total",
     label: "Number of subscribers",
   },
   {
-    value: "videos",
+    value: "nombre_videos_total",
     label: "Number of videos",
   }
 ]
@@ -39,19 +39,39 @@ const orderingList = [
   }
 ]
 
+const collectionDateList = [
+  {
+    value: "2025-05-19", // YYYY-MM-DD format adapted to what PostgreSQL requires.
+    label: "19/05/2025", // What the user see
+  },
+  {
+    value: "2025-06-15",
+    label: "15/06/2025",
+  },
+    {
+    value: "2025-08-09",
+    label: "09/08/2025",
+  }
+]
 
 export default function ChannelsLeaderboard() {
-  const [statChoice,setStatChoice] = useState("")
-  const [order,setOrder] = useState("")
+  const [statChoice,setStatChoice] = useState()
+  const [order,setOrder] = useState()
+  const [collectionDate,setCollectionDate] = useState()
+  const [creationDateFrom,setCreationDateFrom] = useState()
+  const [creationDateTo,setCreationDateTo] = useState()
+
+  const formatDate = (date) => date?.toLocaleDateString('fr-CA')
+  //formatDate used to format the calendar date into a format accepted by PogreSQL (CA for canadian Format yyyy-mm-dd)
   
   let channelsInit = useRef([]) // useRef to preserves the channelsInit after re-redering of  channelsLeaderBoard
   const debounceTimeout = useRef(null)
   const [channels,setChannels] = useState([])
   const [query,setQuery] = useState('')
   
+  //console.log('creationDateTo :',formatDate(creationDateTo))
 
-  //console.log('order :',order)
-  //console.log('statChoice :',statChoice)
+
 
   async function initChannels()
   {
@@ -85,20 +105,23 @@ export default function ChannelsLeaderboard() {
       console.log('Failing while fetching suggestions ',error)
     }
   }
-
-  async function getSorting() 
+  async function getFiltering() 
   {
-    console.log('getSorting i hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
+    //console.log("getFiltering")
     try 
     {
-      const res = await fetch('/api/channels/sorting',{
+      const res = await fetch('/api/channels/filtering',{
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ statChoice, order }),
+        body: JSON.stringify(
+          { statChoice,
+            order,
+            collectionDate,
+            creationDateFrom: formatDate(creationDateFrom),
+            creationDateTo: formatDate(creationDateTo)
+          }),
       })
       const data = await res.json()
-
-      console.log('Sorted Channels',data)
 
       setChannels(data)
       
@@ -106,13 +129,15 @@ export default function ChannelsLeaderboard() {
     catch (error) 
     {
       setChannels(channelsInit.current)
-      console.log('Failing while sorting ',error)
+      console.log('Failing while Filtering ',error)
     }
   }
 
 
   useEffect(()=>{initChannels();},[])
-  
+
+  useEffect(()=>{getFiltering();},[statChoice,order,collectionDate,creationDateFrom,creationDateTo])
+
   useEffect(()=>{
     if (debounceTimeout.current) clearTimeout(debounceTimeout.current) // clear the previous timing
     debounceTimeout.current = setTimeout(
@@ -122,13 +147,6 @@ export default function ChannelsLeaderboard() {
     // Wait 300 ms before sending the request to avoid extra and unuseful requests.
   },[query])
   
-  useEffect(() => {
-    if(statChoice !== "" && order !== "")
-    {
-      getSorting();
-    }
-    
-  }, [statChoice, order])
 
   return (
     <div className='flex flex-col bg-white rounded-lg mt-2 p-2 w-[50%] h-full'>
@@ -148,19 +166,20 @@ export default function ChannelsLeaderboard() {
           />
         </div>
         
-        {/* Channels Sorting */}
-        <div className="flex flex-row gap-2 w-fit mb-3">
+        {/* Channels Sorting and Collection Date */}
+        <div className="flex flex-row mb-3 justify-between">
 
             <Combobox value = {statChoice} setValue={setStatChoice} itemsList={sortingList} text={"Sort channels"}/>
             <Combobox value = {order} setValue={setOrder} itemsList={orderingList} text={"Select order"} />
+            <Combobox value = {collectionDate} setValue={setCollectionDate} itemsList={collectionDateList} text={"Collection Date"} />
 
         </div>
 
-        {/* The Creation date range's choice  */}
-        <div className="flex flex-row gap-2 w-fit items-center mb-3">
+        {/* Creation Date Range*/}
+        <div className="flex flex-row mb-3 gap-5">
 
-          <Calendar22 title={'Creation Date (From)'}/>
-          <Calendar22 title={'Creation Date (To)'}/>
+          <Calendar22 title={'Creation Date (From)'} date={creationDateFrom} setDate={setCreationDateFrom}/>
+          <Calendar22 title={'Creation Date (To)'} date={creationDateTo} setDate={setCreationDateTo}/>
           
         </div>
 
@@ -181,9 +200,9 @@ export default function ChannelsLeaderboard() {
               statChoice = {statChoice}
               channelStats = {
                   {
-                    subscribers:{number : channel.nombre_abonnes_total , icon : faUser},
-                    videos    :{number : channel.nombre_videos_total , icon : faPlay},
-                    views     :{number : channel.nombre_vues_total , icon : faEye},
+                    nombre_abonnes_total:{number : channel.nombre_abonnes_total , icon : faUser},
+                    nombre_videos_total    :{number : channel.nombre_videos_total , icon : faPlay},
+                    nombre_vues_total     :{number : channel.nombre_vues_total , icon : faEye},
                     
                   }
                 }

@@ -35,29 +35,29 @@ export default function ChannelCard({profileURL,channelName,creationDate,label,c
                 {/* subscribers */}
                 <div className= 'text-gray-500 flex flex-row gap-2 items-baseline'>
 
-                    <FontAwesomeIcon icon={channelStats['subscribers']['icon']} />
+                    <FontAwesomeIcon icon={channelStats['nombre_abonnes_total']['icon']} />
                     <h1 className={`${viga.className}`}>Number of subscribers</h1>
                 
                 </div>
-                <p>{new Intl.NumberFormat('fr-FR').format(channelStats['subscribers']['number'])}</p>
+                <p>{new Intl.NumberFormat('fr-FR').format(channelStats['nombre_abonnes_total']['number'])}</p>
                 
                 {/* views */}
                 <div className= 'text-gray-500 flex flex-row gap-2 items-baseline'>
 
-                    <FontAwesomeIcon icon={channelStats['views']['icon']} />
+                    <FontAwesomeIcon icon={channelStats['nombre_vues_total']['icon']} />
                     <h1 className={`${viga.className}`}>Number of views</h1>
                 
                 </div>
-                <p>{new Intl.NumberFormat('fr-FR').format(channelStats['views']['number'])}</p>
+                <p>{new Intl.NumberFormat('fr-FR').format(channelStats['nombre_vues_total']['number'])}</p>
 
                 {/* videos */}
                 <div className= 'text-gray-500 flex flex-row gap-2 items-baseline'>
 
-                    <FontAwesomeIcon icon={channelStats['videos']['icon']} />
+                    <FontAwesomeIcon icon={channelStats['nombre_videos_total']['icon']} />
                     <h1 className={`${viga.className}`}>Number of videos</h1>
                 
                 </div>
-                <p>{new Intl.NumberFormat('fr-FR').format(channelStats['videos']['number'])}</p>
+                <p>{new Intl.NumberFormat('fr-FR').format(channelStats['nombre_videos_total']['number'])}</p>
         
 
             </div>        

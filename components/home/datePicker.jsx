@@ -14,22 +14,20 @@ import {
 import { viga } from "@/fonts"
 
 
-export function Calendar22({title}) {
+export function Calendar22({title,date,setDate }) {
   const [open, setOpen] = React.useState(false)
-  const [date, setDate] = React.useState(undefined)
 
+  //console.log("Creation Date ",date)
 
-  console.log("Creation Date ",date)
-  
   return (
-    <div className="flex flex-col gap-1 items-center">
+    <div className="flex flex-col gap-1 items-start w-fit">
       <h1 className={`${viga.className} text-green1`}>{title}</h1>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
             id="date"
-            className="w-40 justify-between font-normal"
+            className="w-full justify-between font-normal"
           >
             {date ? date.toLocaleDateString("fr-FR") : "Select date"}
             <ChevronDownIcon />
