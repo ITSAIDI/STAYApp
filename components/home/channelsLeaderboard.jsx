@@ -149,7 +149,7 @@ export default function ChannelsLeaderboard() {
   
 
   return (
-    <div className='flex flex-col bg-white rounded-lg mt-2 p-2 w-[50%] h-full'>
+    <div className='flex flex-col bg-white rounded-lg mt-2 p-2 w-[55%] h-full'>
 
         {/* Title */}
         <h1 className = {`${viga.className} text-xl text-green1`}>Channels</h1>

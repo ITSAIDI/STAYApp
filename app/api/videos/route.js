@@ -15,14 +15,12 @@ export async function GET() {
     try 
     {
         const client = await pool.connect() 
-        
         const Query = `
-        select * from chaines  
-        inner join chaines_metriques 
-        on chaines.id_chaine =  chaines_metriques.id_chaine and date_releve_chaine = '2025-05-19'
+        select * from videos  
+        inner join videos_metriques 
+        on videos.id_video =  videos_metriques.id_video AND date_releve_video = '2025-05-21'
         limit 10;
         `
-
         const results = await client.query(Query)
         client.release()
 
@@ -30,8 +28,8 @@ export async function GET() {
     } 
     catch (error) 
     {
-        console.log('error in api : channels fetching',error)
-        return NextResponse.json({ error: 'Failed to fetch channels' }, { status: 500 });
+        console.log('error in api : videos fetching',error)
+        return NextResponse.json({ error: 'Failed to fetch videos' }, { status: 500 });
     }
     
 }
