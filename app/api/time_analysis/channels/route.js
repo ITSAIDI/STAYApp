@@ -17,8 +17,7 @@ export async function GET() {
         const client = await pool.connect() 
         
         const Query = `
-            SELECT 
-            EXTRACT(YEAR FROM date_creation) AS creationYear,
+            SELECT EXTRACT(YEAR FROM date_creation) AS creationYear,
             COUNT(*) AS channelsNomber
             FROM chaines
             WHERE pertinente = true AND EXTRACT(YEAR FROM date_creation) < ( SELECT MAX(EXTRACT(YEAR FROM date_creation)) FROM chaines)
@@ -32,8 +31,8 @@ export async function GET() {
     } 
     catch (error) 
     {
-        console.log('error in api : Nombre of channels by year',error)
-        return NextResponse.json({ error: 'Failed to fetch nombre of channels by year' }, { status: 500 });
+        console.log('error in api : Numbre of channels by year',error)
+        return NextResponse.json({ error: 'Failed to fetch numbre of channels by year' }, { status: 500 });
     }
     
 }

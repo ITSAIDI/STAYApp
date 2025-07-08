@@ -1,6 +1,5 @@
 import { viga,poppins } from '@/fonts'
 import Image from 'next/image'
-import { faUser,faPlay,faEye } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 

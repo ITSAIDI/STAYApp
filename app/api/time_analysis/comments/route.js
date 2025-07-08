@@ -17,12 +17,12 @@ export async function GET() {
         const client = await pool.connect() 
         
         const Query = `
-                SELECT EXTRACT(YEAR FROM date_publication) AS publicationYear,
-                COUNT(*) AS videosNumber
-                FROM videos
-                WHERE EXTRACT(YEAR FROM date_publication) < (SELECT MAX(EXTRACT(YEAR FROM date_publication)) FROM videos)
-                GROUP BY publicationYear
-                ORDER BY publicationYear ASC;
+                    SELECT EXTRACT(YEAR FROM date_commentaire) AS publicationYear,
+                    COUNT(*) AS commentsNumber
+                    FROM commentaires
+                    WHERE EXTRACT(YEAR FROM date_commentaire) < (SELECT MAX(EXTRACT(YEAR FROM date_commentaire)) FROM commentaires)
+                    GROUP BY publicationYear
+                    ORDER BY publicationYear ASC;
                 `
         const results = await client.query(Query)
         client.release()
@@ -31,8 +31,8 @@ export async function GET() {
     } 
     catch (error) 
     {
-        console.log('error in api : Numbre of videos by year',error)
-        return NextResponse.json({ error: 'Failed to fetch numbre of videos by year' }, { status: 500 });
+        console.log('error in api : Numbre of comments by year',error)
+        return NextResponse.json({ error: 'Failed to fetch numbre of comments by year' }, { status: 500 });
     }
     
 }
