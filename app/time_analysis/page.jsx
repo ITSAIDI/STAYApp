@@ -2,10 +2,10 @@
 
 import { SeasonalityChart } from "@/components/time_analysis/seasonalityChart"
 import TimeChart from "@/components/time_analysis/timeChart"
-import { faL } from "@fortawesome/free-solid-svg-icons"
 import { useState,useEffect } from "react"
 import { ThreeDot } from "react-loading-indicators"
-
+import { Checkbox } from "@/components/ui/checkbox"
+import { viga } from "@/fonts"
 
 
 export default function time_analysis() {
@@ -32,6 +32,21 @@ export default function time_analysis() {
     label: "Récolte",
   }
   ]
+  
+  const Events = [
+    {
+      year : '2020',
+      name : 'Covid19'
+    },
+    {
+      year : '2022',
+      name : 'Russia-Ukraine War'
+    }
+  ]
+
+
+  const [showEvents,setShowEvents] = useState(false)
+
   const [channelsData,setChannelsData] = useState([])
   const [videosData,setVideosData] = useState([])
   const [commentsData,setCommentsData] = useState([])
@@ -287,14 +302,22 @@ export default function time_analysis() {
 
   return (
     <div className="p-2 flex flex-col gap-2 w-full">
-
+      <div className="flex flex-row gap-2 mt-2 ml-2">
+        <Checkbox 
+        className='border-green1 border-2'
+        checked={showEvents} 
+        onCheckedChange = {()=>{setShowEvents(!showEvents)}}
+          />
+          <h1 className={`${viga.className} text-[14px]`}>Events</h1>
+      </div>
+    
       <div className="flex flex-row gap-2">
         {channelsLoading ? (
            <div className="mt-[200px] ml-[100px] mb-[100%]">
              <ThreeDot variant="brick-stack"  size="small" color='#7af0a8'/>
            </div>
          
-        ):<TimeChart  chartInfos = {channelsMetadata}  chartData = {channelsData}/>}
+        ):<TimeChart  chartInfos = {channelsMetadata}  chartData = {channelsData} events = {Events} showEvents={showEvents}/>}
         
         {(videosLoading && !channelsLoading) ? (
            <div className="mt-[200px] ml-[200px] mb-[100%]">
@@ -302,7 +325,7 @@ export default function time_analysis() {
            </div>
          
         ):
-        <TimeChart  chartInfos = {videosMetadata}  chartData = {videosData} categoryState = {videosCategory} categoryFunction= {setVideosCategory}/>}
+        <TimeChart  chartInfos = {videosMetadata}  chartData = {videosData} categoryState = {videosCategory} categoryFunction= {setVideosCategory} events = {Events} showEvents={showEvents}/>}
         
       </div>
 
@@ -312,20 +335,30 @@ export default function time_analysis() {
              <ThreeDot variant="brick-stack"  size="small" color='#7af0a8'/>
            </div>
          
-        ):<TimeChart  chartInfos = {commentsMetadata}  chartData = {commentsData} categoryState = {commentsCategory} categoryFunction= {setCommentsCategory}/>}
+        ):<TimeChart  chartInfos = {commentsMetadata}  chartData = {commentsData} categoryState = {commentsCategory} categoryFunction= {setCommentsCategory} events = {Events} showEvents={showEvents}/>}
         
         {(!videosLoading && !channelsLoading && !commentsLoading && durationsLoading) ? (
            <div className="mt-[200px] ml-[200px] mb-[100%]">
              <ThreeDot variant="brick-stack"  size="small" color='#7af0a8'/>
            </div>
          
-        ):<TimeChart  chartInfos = {durationsMetadata}  chartData = {durationsData} categoryState = {durationsCategory} categoryFunction= {setDurationsCategory}/>}
+        ):<TimeChart  chartInfos = {durationsMetadata}  chartData = {durationsData} categoryState = {durationsCategory} categoryFunction= {setDurationsCategory} events = {Events} showEvents={showEvents}/>}
       
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-       <SeasonalityChart chartInfos={channelSeasonalityMetadata} chartData={channelSeasonalityData} />
-       <SeasonalityChart chartInfos={videoSeasonalityMetadata} chartData={videoSeasonalityData} />
+         {(!videosLoading && !channelsLoading && !commentsLoading && !durationsLoading && channelSeasonalityLoading) ? (
+           <div className="mt-[200px] ml-[200px] mb-[100%]">
+             <ThreeDot variant="brick-stack"  size="small" color='#7af0a8'/>
+           </div>
+         
+        ):<SeasonalityChart chartInfos={channelSeasonalityMetadata} chartData={channelSeasonalityData} />}
+         {(!videosLoading && !channelsLoading && !commentsLoading && !durationsLoading && !channelSeasonalityLoading && videoSeasonalityLoading) ? (
+           <div className="mt-[200px] ml-[200px] mb-[100%]">
+             <ThreeDot variant="brick-stack"  size="small" color='#7af0a8'/>
+           </div>
+         
+        ):<SeasonalityChart chartInfos={videoSeasonalityMetadata} chartData={videoSeasonalityData} />}
       </div>
       
       

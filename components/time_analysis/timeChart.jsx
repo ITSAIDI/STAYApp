@@ -18,9 +18,11 @@ import { poppins,viga } from "@/fonts"
 import { Combobox } from "../home/combobox"
 
 
-export default function TimeChart({chartInfos,chartData,categoryState,categoryFunction}) {
+export default function TimeChart({chartInfos,chartData,categoryState,categoryFunction,events,showEvents}) {
 
   if (!chartData || chartData.length === 0) return null 
+
+  const eventYears = events.map(event => event.year)
 
   const keys = Object.keys(chartData[0])
 
@@ -30,8 +32,6 @@ export default function TimeChart({chartInfos,chartData,categoryState,categoryFu
           color: "#13452D",
         }
       }
-
- 
 
   return (
     <Card className='w-[500px] h-[400px]' >
@@ -74,12 +74,71 @@ export default function TimeChart({chartInfos,chartData,categoryState,categoryFu
               type="natural"
               stroke="#227E51"
               strokeWidth={2}
-              dot={{
-                fill: "#227E51",
+               dot={(props) => {
+                    const { cx, cy, payload, index } = props
+                    const year = payload[keys[0]] // x-axis key (e.g., "year")
+
+                    return (
+                      <circle
+                        key={`${index}-${keys[1]}`}
+                        cx={cx}
+                        cy={cy}
+                        r={4}
+                        fill={(eventYears.includes(year) && showEvents) ? "red" : "#227E51"}
+                      />
+                    )
+                  }}
+              activeDot={(props) => {
+                const { cx, cy, payload, index } = props
+                const year = payload[keys[0]]
+                const event = events.find(e => e.year === year)
+
+                if (!event || !showEvents) return (<circle
+                    key={`${index}-${keys[1]}`}
+                    cx={cx}
+                    cy={cy}
+                    r={8}
+                    fill="#227E51"
+                  />)
+
+                const textX = cx - 80
+                const textY = cy - 15
+                const padding = 4
+                const fontSize = 14
+                
+              const textWidth = event.name.length * 8
+              const textHeight = fontSize + padding * 2
+
+              return (
+                <g>
+                  <circle
+                    key={`${index}-${keys[1]}`}
+                    cx={cx}
+                    cy={cy}
+                    r={8}
+                    fill={"red"}
+                  />
+                  <rect
+                    x={textX - padding}
+                    y={textY - fontSize}
+                    width={textWidth + padding * 2}
+                    height={textHeight}
+                    fill="#7af0a8"
+                    rx={3} // coins arrondis optionnel
+                    ry={3}
+                  />
+                  <text
+                    className={`${viga.className} text-[14px]`}
+                    x={textX}
+                    y={textY}
+                    fill="#13452D"
+                  >
+                    {event.name}
+                  </text>
+                </g>
+              )
               }}
-              activeDot={{
-                r: 8,
-              }}
+
             >
             </Line>
           </LineChart>
