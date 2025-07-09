@@ -20,7 +20,7 @@ import { Combobox } from "../home/combobox"
 
 export default function TimeChart({chartInfos,chartData,categoryState,categoryFunction}) {
 
-  if (!chartData || chartData.length === 0) return null // ou un loader
+  if (!chartData || chartData.length === 0) return null 
 
   const keys = Object.keys(chartData[0])
 
