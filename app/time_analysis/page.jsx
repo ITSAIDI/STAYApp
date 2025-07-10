@@ -302,7 +302,7 @@ export default function time_analysis() {
 
   return (
     <div className="p-2 flex flex-col gap-2 w-full">
-      <div className="flex flex-row gap-2 mt-2 ml-2">
+      <div className="flex flex-row gap-2 mt-2 ml-2 items-center">
         <Checkbox 
         className='border-green1 border-2'
         checked={showEvents} 
@@ -317,7 +317,7 @@ export default function time_analysis() {
              <ThreeDot variant="brick-stack"  size="small" color='#7af0a8'/>
            </div>
          
-        ):<TimeChart  chartInfos = {channelsMetadata}  chartData = {channelsData} events = {Events} showEvents={showEvents}/>}
+        ):<TimeChart  chartInfos = {channelsMetadata}  chartData = {channelsData} events = {Events} showEvents={showEvents} showCumulOption = {true}/>}
         
         {(videosLoading && !channelsLoading) ? (
            <div className="mt-[200px] ml-[200px] mb-[100%]">
@@ -325,7 +325,7 @@ export default function time_analysis() {
            </div>
          
         ):
-        <TimeChart  chartInfos = {videosMetadata}  chartData = {videosData} categoryState = {videosCategory} categoryFunction= {setVideosCategory} events = {Events} showEvents={showEvents}/>}
+        <TimeChart  chartInfos = {videosMetadata}  chartData = {videosData} categoryState = {videosCategory} categoryFunction= {setVideosCategory} events = {Events} showEvents={showEvents} showCumulOption = {true}/>}
         
       </div>
 

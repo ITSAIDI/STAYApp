@@ -1,6 +1,5 @@
 "use client"
 
-
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 import {
   Card,
@@ -14,18 +13,56 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { poppins,viga } from "@/fonts"
+import {viga } from "@/fonts"
 import { Combobox } from "../home/combobox"
+import { Checkbox } from "@/components/ui/checkbox"
+import { useState } from "react"
 
 
-export default function TimeChart({chartInfos,chartData,categoryState,categoryFunction,events,showEvents}) {
+export default function TimeChart({chartInfos,chartData,categoryState,categoryFunction,events,showEvents,showCumulOption =false}) {
 
   if (!chartData || chartData.length === 0) return null 
 
-  const eventYears = events.map(event => event.year)
-
   const keys = Object.keys(chartData[0])
+  
+  function cumulativeVideos() 
+  {
+    let cumulativeSum = 0
 
+    return parsedChartData.map(item => {
+      cumulativeSum += item[keys[1]]
+      return {
+        ...item,
+        [keys[1]]: cumulativeSum
+        }
+        })
+  }
+
+  function handleClick()
+  {
+    if(showCumul)
+    {
+      setShowCumul(false)
+      setShowenData(parsedChartData)
+    }
+    else
+    {
+      setShowCumul(true)
+      setShowenData(parsedCumulData)
+    }
+  }
+
+  let parsedChartData = chartData.map(item =>({
+    ...item,
+    [keys[1]]:parseInt(item[keys[1]])
+  }))
+
+  let parsedCumulData = cumulativeVideos()
+
+
+  const [showCumul,setShowCumul] = useState(false)
+  const [showenData,setShowenData] = useState(parsedChartData)
+  const eventYears = events.map(event => event.year)
   const chartConfig = {
         [keys[1]]: {
           label: chartInfos.label,
@@ -35,7 +72,7 @@ export default function TimeChart({chartInfos,chartData,categoryState,categoryFu
 
   return (
     <Card className='w-[500px] h-[400px]' >
-      <CardHeader className='flex flex-row justify-between'>
+      <CardHeader className='flex flex-wrap justify-between'>
         <div className="flex flex-col gap-2">
           <CardTitle>{chartInfos.charTitle}</CardTitle>
           <CardDescription>{chartInfos.description}</CardDescription>
@@ -44,12 +81,24 @@ export default function TimeChart({chartInfos,chartData,categoryState,categoryFu
         {(chartInfos.categories.length > 0) &&
         <Combobox value = {categoryState} setValue={categoryFunction} itemsList={chartInfos.categories} text={"Select category"}/>
         }
+        {showCumulOption && (
+            <div className="flex flex-row gap-2 mt-2 items-center">
+              <Checkbox 
+              className='border-green1 border-2'
+              checked={showCumul} 
+              onCheckedChange = {()=>{handleClick();}}
+                />
+              <h1 className={`${viga.className} text-[15px]`}>Cumulative</h1>
+            </div>
+          )
+        }
+        
       </CardHeader>
 
       <CardContent className='mt-0'>
         <ChartContainer config={chartConfig}>
           <LineChart
-            data={chartData}
+            data={showenData}
             margin={{
               top: 20,
               left: 12,
