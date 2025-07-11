@@ -2,10 +2,13 @@
 
 import { SeasonalityChart } from "@/components/time_analysis/seasonalityChart"
 import TimeChart from "@/components/time_analysis/timeChart"
+import VideosChart from "@/components/time_analysis/videosChart"
+
 import { useState,useEffect } from "react"
 import { ThreeDot } from "react-loading-indicators"
 import { Checkbox } from "@/components/ui/checkbox"
 import { viga } from "@/fonts"
+
 
 
 export default function time_analysis() {
@@ -48,7 +51,12 @@ export default function time_analysis() {
   const [showEvents,setShowEvents] = useState(false)
 
   const [channelsData,setChannelsData] = useState([])
+
   const [videosData,setVideosData] = useState([])
+  const [videosDataLarge,setVideosDataLarge] = useState([])
+  const [videosDataSmall,setVideosDataSmall] = useState([])
+  const [videosDataMedium,setVideosDataMedium] = useState([])
+
   const [commentsData,setCommentsData] = useState([])
   const [durationsData,setDurationsData] = useState([])
   const [channelSeasonalityData,setChannelSeasonalityData] = useState([])
@@ -66,6 +74,7 @@ export default function time_analysis() {
   const [durationsLoading, setDurationsLoading] = useState(true);
   const [channelSeasonalityLoading, setchannelSeasonalityLoading] = useState(true);
   const [videoSeasonalityLoading, setvideoSeasonalityLoading] = useState(true);
+
 
   const channelsMetadata = {
     charTitle : 'Channels by year',
@@ -199,10 +208,26 @@ export default function time_analysis() {
   {
     try 
     {
-      const res = await fetch('/api/time_analysis/videos')
-      const data = await res.json()
-      //console.log(data)
+      let res = await fetch('/api/time_analysis/videos')
+      let data = await res.json()
       setVideosData(data)
+
+      res = await fetch('/api/time_analysis/videosLargeChannels')
+      data = await res.json()
+      setVideosDataLarge(data)
+
+
+      console.log('Large :',data)
+      
+      res = await fetch('/api/time_analysis/videosSmallChannels')
+      data = await res.json()
+      setVideosDataSmall(data)
+
+      res = await fetch('/api/time_analysis/videosMediumChannels')
+      data = await res.json()
+      setVideosDataMedium(data)
+
+
     } 
     catch (error) {
       console.log('Failing while fetching numbre of videos by year ',error)

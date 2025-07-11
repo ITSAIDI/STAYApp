@@ -24,7 +24,7 @@ export default function TimeChart({chartInfos,chartData,categoryState,categoryFu
   if (!chartData || chartData.length === 0) return null 
 
   const keys = Object.keys(chartData[0])
-  
+
   function cumulativeVideos() 
   {
     let cumulativeSum = 0
