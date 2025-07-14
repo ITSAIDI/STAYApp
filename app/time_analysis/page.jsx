@@ -216,17 +216,13 @@ export default function time_analysis() {
       data = await res.json()
       setVideosDataLarge(data)
 
-
-      console.log('Large :',data)
-      
-      res = await fetch('/api/time_analysis/videosSmallChannels')
+      res = await fetch('/api/time_analysis/videoSmallChannels')
       data = await res.json()
       setVideosDataSmall(data)
 
       res = await fetch('/api/time_analysis/videosMediumChannels')
       data = await res.json()
       setVideosDataMedium(data)
-
 
     } 
     catch (error) {

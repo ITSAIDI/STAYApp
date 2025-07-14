@@ -4,12 +4,13 @@ import { Pool } from 'pg'
 // PostgreSQL connection
 
 const pool = new Pool({
-  user: process.env.DB_USER,
+  user: process.env.DB_ADMIN,
   host: process.env.DB_HOST,
   database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
+  password: process.env.DB_ADMIN_PASSWORD,
   port: parseInt(process.env.DB_PORT),
 })
+
 
 // must be named GET uppercased so Nextjs map all get requestes to this function
 
