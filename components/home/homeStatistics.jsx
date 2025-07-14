@@ -1,6 +1,7 @@
 import { faTv, faPlay, faComments } from "@fortawesome/free-solid-svg-icons"
 import HomeBox from "./homeBox"
 
+
 export default async function HomeStatistics() {
   const res = await fetch(`${process.env.BASE_URL}/api/statistics`);
 
