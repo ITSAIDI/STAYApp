@@ -6,7 +6,7 @@ export default function home() {
   return (
     <div className="flex flex-col p-3">
        <HomeStatistics  />
-       <div className="flex flex-row gap-3 justify-between">
+       <div className="grid grid-cols-2 gap-2 w-full">
           <ChannelsLeaderboard />
           <VideosLeaderboard  />
        </div>

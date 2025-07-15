@@ -332,7 +332,7 @@ export default function time_analysis() {
           <h1 className={`${viga.className} text-[14px]`}>Events</h1>
       </div>
     
-      <div className="flex flex-row gap-2">
+      <div className="grid grid-cols-2 gap-2">
         {channelsLoading ? (
            <div className="mt-[200px] ml-[100px] mb-[100%]">
              <ThreeDot variant="brick-stack"  size="small" color='#7af0a8'/>
@@ -350,7 +350,7 @@ export default function time_analysis() {
         
       </div>
 
-      <div className="flex flex-row gap-2">
+      <div className="grid grid-cols-2 gap-2">
          {(!videosLoading && !channelsLoading && commentsLoading) ? (
            <div className="mt-[200px] ml-[200px] mb-[100%]">
              <ThreeDot variant="brick-stack"  size="small" color='#7af0a8'/>
@@ -367,7 +367,7 @@ export default function time_analysis() {
       
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-2">
          {(!videosLoading && !channelsLoading && !commentsLoading && !durationsLoading && channelSeasonalityLoading) ? (
            <div className="mt-[200px] ml-[200px] mb-[100%]">
              <ThreeDot variant="brick-stack"  size="small" color='#7af0a8'/>

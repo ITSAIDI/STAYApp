@@ -149,7 +149,7 @@ export default function ChannelsLeaderboard() {
   
 
   return (
-    <div className='flex flex-col bg-white rounded-lg mt-2 p-2 w-[55%] h-full'>
+    <div className='flex flex-col bg-white rounded-lg mt-2 p-2 w-full h-full'>
 
         {/* Title */}
         <h1 className = {`${viga.className} text-xl text-green1`}>Channels</h1>
@@ -167,7 +167,7 @@ export default function ChannelsLeaderboard() {
         </div>
         
         {/* Channels Sorting and Collection Date */}
-        <div className="flex flex-row mb-3 justify-between">
+        <div className="flex flex-wrap mb-3 justify-between gap-2">
 
             <Combobox value = {statChoice} setValue={setStatChoice} itemsList={sortingList} text={"Sort channels"}/>
             <Combobox value = {order} setValue={setOrder} itemsList={orderingList} text={"Select order"} />

@@ -71,7 +71,7 @@ export default function TimeChart({chartInfos,chartData,categoryState,categoryFu
       }
 
   return (
-    <Card className='w-[500px] h-[400px]' >
+    <Card className='w-full h-full' >
       <CardHeader className='flex flex-wrap justify-between'>
         <div className="flex flex-col gap-2">
           <CardTitle>{chartInfos.charTitle}</CardTitle>

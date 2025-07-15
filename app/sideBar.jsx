@@ -34,7 +34,7 @@ export default function SideBar() {
     faLightbulb,
  ]
   return (
-    <div className='bg-gray-200 w-[20%] flex flex-col items-center p-2  rounded-lg'>
+    <div className='bg-gray-200 w-[20%] flex flex-col items-center p-2  rounded-lg min-w-[200px]'>
 
       {/*Head*/}
       <div className='flex flex-row items-center mb-30'>

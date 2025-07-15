@@ -97,7 +97,7 @@ export default function VideosLeaderboard() {
 
 
   return (
-    <div className='flex flex-col bg-white rounded-lg mt-2 p-2 w-[45%] h-full'>
+    <div className='flex flex-col bg-white rounded-lg mt-2 p-2 w-full h-full'>
 
         {/* Title */}
         <h1 className = {`${viga.className} text-xl text-green1`}>Videos</h1>
