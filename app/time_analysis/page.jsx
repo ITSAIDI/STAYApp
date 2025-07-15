@@ -337,14 +337,14 @@ export default function time_analysis() {
     
       <div className="grid grid-cols-2 gap-2">
         {channelsLoading ? (
-           <div className="mt-[200px] ml-[100px] mb-[100%]">
+           <div className="mt-[200px] ml-[100px]">
              <ThreeDot variant="brick-stack"  size="small" color={ThreeDotColor}/>
            </div>
          
         ):<TimeChart  chartInfos = {channelsMetadata}  chartData = {channelsData} events = {Events} showEvents={showEvents} showCumulOption = {true}/>}
         
         {(videosLoading && !channelsLoading) ? (
-           <div className="mt-[200px] ml-[200px] mb-[100%]">
+           <div className="mt-[200px] ml-[200px]">
              <ThreeDot variant="brick-stack"  size="small" color={ThreeDotColor}/>
            </div>
          
@@ -355,14 +355,14 @@ export default function time_analysis() {
 
       <div className="grid grid-cols-2 gap-2">
          {(!videosLoading && !channelsLoading && commentsLoading) ? (
-           <div className="mt-[200px] ml-[200px] mb-[100%]">
+           <div className="mt-[200px] ml-[200px]">
              <ThreeDot variant="brick-stack"  size="small" color={ThreeDotColor}/>
            </div>
          
         ):<TimeChart  chartInfos = {commentsMetadata}  chartData = {commentsData} categoryState = {commentsCategory} categoryFunction= {setCommentsCategory} events = {Events} showEvents={showEvents}/>}
         
         {(!videosLoading && !channelsLoading && !commentsLoading && durationsLoading) ? (
-           <div className="mt-[200px] ml-[200px] mb-[100%]">
+           <div className="mt-[200px] ml-[200px]">
              <ThreeDot variant="brick-stack"  size="small" color={ThreeDotColor}/>
            </div>
          
@@ -372,13 +372,13 @@ export default function time_analysis() {
 
       <div className="grid grid-cols-2 gap-2">
          {(!videosLoading && !channelsLoading && !commentsLoading && !durationsLoading && channelSeasonalityLoading) ? (
-           <div className="mt-[200px] ml-[200px] mb-[100%]">
+           <div className="mt-[200px] ml-[200px]">
              <ThreeDot variant="brick-stack"  size="small" color={ThreeDotColor}/>
            </div>
          
         ):<SeasonalityChart chartInfos={channelSeasonalityMetadata} chartData={channelSeasonalityData} />}
          {(!videosLoading && !channelsLoading && !commentsLoading && !durationsLoading && !channelSeasonalityLoading && videoSeasonalityLoading) ? (
-           <div className="mt-[200px] ml-[200px] mb-[100%]">
+           <div className="mt-[200px] ml-[200px]">
              <ThreeDot variant="brick-stack"  size="small" color={ThreeDotColor}/>
            </div>
          
