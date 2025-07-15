@@ -19,162 +19,220 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { useState } from "react"
 
 
-export default function VideosChart({chartInfos,chartData,categoryState,categoryFunction,events,showEvents,chartDataLarge,chartDataSmall,chartDataMedium}) {
+export default function VideosChart({chartInfos,categoryState,categoryFunction,events,showEvents,chartDataLarge,chartDataSmall,chartDataMedium}) {
 
-  if (!chartData || chartData.length === 0) return null 
-
-  const keys = Object.keys(chartData[0])
+  if (!chartDataLarge || chartDataLarge.length === 0) return null 
 
   const [showCumul,setShowCumul] = useState(false) // One State to handle the 4 plots
+  const [showDefault,setShowDefault] = useState(true)
   const [showLarge,setShowLarge] = useState(false)
   const [showSmall,setShowSmall] = useState(false)
   const [showMedium,setShowMedium] = useState(false)
 
-  function cumulativeVideos(data) 
-  {
-    let cumulativeSum = 0
 
-    return data.map(item => {
-      cumulativeSum += item[keys[1]]
+  function mergeVideosData(largeData, smallData, mediumData) {
+  const yearSet = new Set()
+
+  largeData.forEach(item => yearSet.add(item.publicationyear))
+  smallData.forEach(item => yearSet.add(item.publicationyear))
+  mediumData.forEach(item => yearSet.add(item.publicationyear))
+
+  const merged = Array.from(yearSet)
+    .sort()
+    .map(year => {
+      const large = largeData.find(d => d.publicationyear === year)
+      const small = smallData.find(d => d.publicationyear === year)
+      const medium = mediumData.find(d => d.publicationyear === year)
+
+      const largeVal = large ? parseInt(large.videosnumber) : 0
+      const smallVal = small ? parseInt(small.videosnumber) : 0
+      const mediumVal = medium ? parseInt(medium.videosnumber) : 0
+
       return {
-        ...item,
-        [keys[1]]: cumulativeSum
-        }
-        })
+        publicationyear: year,
+        default: largeVal + smallVal + mediumVal,
+        large: largeVal,
+        small: smallVal,
+        medium: mediumVal
+      }
+    })
+
+  return merged 
   }
 
-  function parseToInt(data)
-  {
-    let parsedData = data.map(item =>({
-    ...item,
-    [keys[1]]:parseInt(item[keys[1]])
-    }))
+  function computeCumulativeData(data) {
+  let cumulDefault = 0
+  let cumulLarge = 0
+  let cumulSmall = 0
+  let cumulMedium = 0
 
-    return parsedData
+  return data.map(item => {
+    cumulDefault += item.default
+    cumulLarge += item.large
+    cumulSmall += item.small
+    cumulMedium += item.medium
+
+    return {
+      publicationyear: item.publicationyear,
+      default: cumulDefault,
+      large: cumulLarge,
+      small: cumulSmall,
+      medium: cumulMedium
+    }
+  })
   }
 
-  function handleClick()
-  {
+  function handleClick(){
     if(showCumul)
     {
       setShowCumul(false)
-      setDataDefault(TheData['default'])
-      setDataLarge(TheData['large'])
-      setDataSmall(TheData['small'])
-      setDataMedium(TheData['medium'])
+      setData(chartData)
     }
     else
     {
       setShowCumul(true)
-      setDataDefault(TheCumulData['default'])
-      setDataLarge(TheCumulData['large'])
-      setDataSmall(TheCumulData['small'])
-      setDataMedium(TheCumulData['medium'])
+      setData(chartDataCumul)
     }
+
   }
 
-  const TheData = {
-    'default': parseToInt(chartData),
-    'large':parseToInt(chartDataLarge) ,
-    'small':parseToInt(chartDataSmall) ,
-    'medium':parseToInt(chartDataMedium)
-  } 
-  const TheCumulData = {
-    'default': cumulativeVideos(TheData['default']),
-    'large': cumulativeVideos(TheData['large']),
-    'small':cumulativeVideos(TheData['small']) ,
-    'medium':cumulativeVideos(TheData['medium'])
-  } 
+  const chartData = mergeVideosData(chartDataLarge,chartDataSmall,chartDataMedium)
+  const chartDataCumul = computeCumulativeData(chartData)
+  const [data,setData]= useState(chartData)
 
-  const [dataDefault,setDataDefault] = useState(TheData['default'])
-  const [dataLarge,setDataLarge] = useState(TheData['large'])
-  const [dataSmall,setDataSmall] = useState(TheData['small'])
-  const [dataMedium,setDataMedium] = useState(TheData['medium'])
+  //console.log('chartData  : ',chartData)
+  //console.log('chartDataCumul  : ',chartDataCumul)
+
+
+  const chartConfig = {
+  default: {
+    label: "All types",
+    color: "#227E51",
+  },
+  large: {
+    label: "Large",
+    color: "#13452D",
+  },
+  small: {
+    label: "Small",
+    color: "#7af0a8",
+  },
+  medium: {
+    label: "Medium",
+    color: "#B6F500",
+  },
+  } 
 
   const eventYears = events.map(event => event.year)
 
-  const chartConfig = {
-    'default':{
-       [keys[1]]: {
-          label: chartInfos.label,
-          color: "#227E51",
-        }
-       },
-    'large':{
-       [keys[1]]: {
-          label: chartInfos.label,
-          color: "#13452D",
-        }
-       },
-    'small':{
-       [keys[1]]: {
-          label: chartInfos.label,
-          color: "#7af0a8",
-        }
-       },
-    'medium':{
-       [keys[1]]: {
-          label: chartInfos.label,
-          color: "#30ce74",
-        }
-       },
-       
-      }
+
 
   return (
-    <Card className='w-[500px] h-[400px]' >
-      <CardHeader className='flex flex-wrap justify-between'>
-        <div className="flex flex-col gap-2">
-          <CardTitle>{chartInfos.charTitle}</CardTitle>
-          <CardDescription>{chartInfos.description}</CardDescription>
+    <Card className='w-full h-full' >
+      <CardHeader className='flex flex-col gap-2'>
+        <div className="flex flex-row justify-between items-center w-full">
+           <div className="flex flex-col gap-2">
+              <CardTitle>{chartInfos.charTitle}</CardTitle>
+              <CardDescription>{chartInfos.description}</CardDescription>
+            </div>
+            
+            <div className="flex flex-row gap-2 mt-2 items-center">
+              <Checkbox 
+              className='border-black border-2'
+              checked={showCumul} 
+              onCheckedChange = {()=>{handleClick();}}
+                />
+              <h1 className={`${viga.className} text-[15px]`}>Cumulative</h1>
+            </div>
         </div>
-        
-        {(chartInfos.categories.length > 0) &&
-        <Combobox value = {categoryState} setValue={categoryFunction} itemsList={chartInfos.categories} text={"Select category"}/>
-        }
-        
-        <div className="flex flex-row gap-2 mt-2 items-center">
-          <Checkbox 
-          className='border-black border-2'
-          checked={showCumul} 
-          onCheckedChange = {()=>{handleClick();}}
-            />
-          <h1 className={`${viga.className} text-[15px]`}>Cumulative</h1>
-        </div>
+       
+        <div className="flex flex-wrap gap-3">
 
-        <div className="flex flex-row gap-2 mt-2 items-center">
-          <Checkbox 
-          className='border-green1 border-2'
-          checked={showLarge} 
-          onCheckedChange = {()=>{setShowLarge(!showLarge)}}
+            {(chartInfos.categories.length > 0) &&
+            <Combobox value = {categoryState} setValue={categoryFunction} itemsList={chartInfos.categories} text={"Select category"}/>
+            }
+          
+            
+          <div className="flex flex-row gap-2 mt-2 items-center">
+            <Checkbox 
+              className="border-2"
+              style={{
+                borderColor: chartConfig.default.color,
+                backgroundColor: showDefault ? chartConfig.default.color : 'transparent'
+              }}
+              checked={showDefault} 
+              onCheckedChange={() => setShowDefault(!showDefault)}
             />
-          <h1 className={`${viga.className} text-[15px]`}>Large Channels</h1>
-        </div>
-        
-        <div className="flex flex-row gap-2 mt-2 items-center">
-          <Checkbox 
-          className='border-green3 border-2'
-          checked={showSmall} 
-          onCheckedChange = {()=>{setShowSmall(!showSmall)}}
+            <h1
+              className={`${viga.className} text-[15px]`}
+              style={{ color: chartConfig.default.color }}
+            >
+              All Channels
+            </h1>
+          </div>
+
+          <div className="flex flex-row gap-2 mt-2 items-center">
+            <Checkbox 
+              className="border-2"
+              style={{
+                borderColor: chartConfig.large.color,
+                backgroundColor: showLarge ? chartConfig.large.color : 'transparent'
+              }}
+              checked={showLarge} 
+              onCheckedChange={() => setShowLarge(!showLarge)}
             />
-          <h1 className={`${viga.className} text-[15px]`}>Small Channels</h1>
-        </div>
-        
-        <div className="flex flex-row gap-2 mt-2 items-center">
-          <Checkbox 
-          className='border-green4 border-2'
-          checked={showMedium} 
-          onCheckedChange = {()=>{setShowMedium(!showMedium)}}
+            <h1
+              className={`${viga.className} text-[15px]`}
+              style={{ color: chartConfig.large.color }}
+            >
+              Large Channels
+            </h1>
+          </div>
+
+          <div className="flex flex-row gap-2 mt-2 items-center">
+            <Checkbox 
+              className="border-2"
+              style={{
+                borderColor: chartConfig.small.color,
+                backgroundColor: showSmall ? chartConfig.small.color : 'transparent'
+              }}
+              checked={showSmall} 
+              onCheckedChange={() => setShowSmall(!showSmall)}
             />
-          <h1 className={`${viga.className} text-[15px]`}>Medium Channels</h1>
+            <h1
+              className={`${viga.className} text-[15px]`}
+              style={{ color: chartConfig.small.color }}
+            >
+              Small Channels
+            </h1>
+          </div>
+
+          <div className="flex flex-row gap-2 mt-2 items-center">
+            <Checkbox 
+              className="border-2"
+              style={{
+                borderColor: chartConfig.medium.color,
+                backgroundColor: showMedium ? chartConfig.medium.color : 'transparent'
+              }}
+              checked={showMedium} 
+              onCheckedChange={() => setShowMedium(!showMedium)}
+            />
+            <h1
+              className={`${viga.className} text-[15px]`}
+              style={{ color: chartConfig.medium.color }}
+            >
+              Medium Channels
+            </h1>
+          </div>
+
         </div>
            
       </CardHeader>
 
       <CardContent className='mt-0'>
-        <ChartContainer config={chartConfig['default']}>
+        <ChartContainer config={chartConfig}>
           <LineChart
-            data={dataDefault}
+            data={data}
             margin={{
               top: 20,
               left: 12,
@@ -183,7 +241,7 @@ export default function VideosChart({chartInfos,chartData,categoryState,category
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey={keys[0]}
+              dataKey="publicationyear"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
@@ -194,36 +252,40 @@ export default function VideosChart({chartInfos,chartData,categoryState,category
               cursor={false}
               content={<ChartTooltipContent indicator="line" />}
             />
+
+            {/* Default */}
+            {
+              showDefault && 
             <Line
-              dataKey={keys[1]}
+              dataKey="default"
               type="natural"
-              stroke={chartConfig['default'][keys[1]]['color']}
+              stroke={chartConfig.default.color}
               strokeWidth={2}
                dot={(props) => {
                     const { cx, cy, payload, index } = props
-                    const year = payload[keys[0]] // x-axis key (e.g., "year")
+                    const year = payload["publicationyear"] // x-axis key (e.g., "year")
 
                     return (
                       <circle
-                        key={`${index}-${keys[1]}-default`}
+                        key={`${index}-default`}
                         cx={cx}
                         cy={cy}
                         r={4}
-                        fill={(eventYears.includes(year) && showEvents) ? "red" : chartConfig['default'][keys[1]]['color']}
+                        fill={(eventYears.includes(year) && showEvents) ? "red" : chartConfig.default.color}
                       />
                     )
                   }}
               activeDot={(props) => {
                 const { cx, cy, payload, index } = props
-                const year = payload[keys[0]]
+                const year = payload["publicationyear"]
                 const event = events.find(e => e.year === year)
 
                 if (!event || !showEvents) return (<circle
-                    key={`${index}-${keys[1]}-default`}
+                    key={`${index}-default`}
                     cx={cx}
                     cy={cy}
                     r={8}
-                    fill= {chartConfig['default'][keys[1]]['color']}
+                    fill= {chartConfig.default.color}
                   />)
 
                 const textX = cx - 80
@@ -237,7 +299,7 @@ export default function VideosChart({chartInfos,chartData,categoryState,category
               return (
                 <g>
                   <circle
-                    key={`${index}-${keys[1]}-default`}
+                    key={`${index}-default`}
                     cx={cx}
                     cy={cy}
                     r={8}
@@ -266,62 +328,41 @@ export default function VideosChart({chartInfos,chartData,categoryState,category
 
             >
             </Line>
-          </LineChart>
-        </ChartContainer>
-        {
-          showLarge && 
-          <ChartContainer config={chartConfig['large']}>
-          <LineChart
-            data={dataLarge}
-            margin={{
-              top: 20,
-              left: 12,
-              right: 12,
-            }}
-          >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey={keys[0]}
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              className={`${viga.className} text-[14px]`}
-            />
-            <ChartTooltip
-              className = {`${viga.className} text-[14px]`}
-              cursor={false}
-              content={<ChartTooltipContent indicator="line" />}
-            />
+            }
+            
+            {/* Large */}
+            {
+              showLarge &&
             <Line
-              dataKey={keys[1]}
+              dataKey="large"
               type="natural"
-              stroke={chartConfig['large'][keys[1]]['color']}
+              stroke={chartConfig.large.color}
               strokeWidth={2}
                dot={(props) => {
                     const { cx, cy, payload, index } = props
-                    const year = payload[keys[0]] // x-axis key (e.g., "year")
+                    const year = payload["publicationyear"] // x-axis key (e.g., "year")
 
                     return (
                       <circle
-                        key={`${index}-${keys[1]}-large`}
+                        key={`${index}-large`}
                         cx={cx}
                         cy={cy}
                         r={4}
-                        fill={(eventYears.includes(year) && showEvents) ? "red" : chartConfig['large'][keys[1]]['color']}
+                        fill={(eventYears.includes(year) && showEvents) ? "red" : chartConfig.large.color}
                       />
                     )
                   }}
               activeDot={(props) => {
                 const { cx, cy, payload, index } = props
-                const year = payload[keys[0]]
+                const year = payload["publicationyear"]
                 const event = events.find(e => e.year === year)
 
                 if (!event || !showEvents) return (<circle
-                    key={`${index}-${keys[1]}-large`}
+                    key={`${index}-large`}
                     cx={cx}
                     cy={cy}
                     r={8}
-                    fill= {chartConfig['large'][keys[1]]['color']}
+                    fill= {chartConfig.large.color}
                   />)
 
                 const textX = cx - 80
@@ -335,7 +376,7 @@ export default function VideosChart({chartInfos,chartData,categoryState,category
               return (
                 <g>
                   <circle
-                    key={`${index}-${keys[1]}-large`}
+                    key={`${index}-large`}
                     cx={cx}
                     cy={cy}
                     r={8}
@@ -364,9 +405,165 @@ export default function VideosChart({chartInfos,chartData,categoryState,category
 
             >
             </Line>
+            }
+
+            {/* Small */}
+             {
+              showSmall &&
+            <Line
+              dataKey="small"
+              type="natural"
+              stroke={chartConfig.small.color}
+              strokeWidth={2}
+               dot={(props) => {
+                    const { cx, cy, payload, index } = props
+                    const year = payload["publicationyear"] // x-axis key (e.g., "year")
+
+                    return (
+                      <circle
+                        key={`${index}-small`}
+                        cx={cx}
+                        cy={cy}
+                        r={4}
+                        fill={(eventYears.includes(year) && showEvents) ? "red" : chartConfig.small.color}
+                      />
+                    )
+                  }}
+              activeDot={(props) => {
+                const { cx, cy, payload, index } = props
+                const year = payload["publicationyear"]
+                const event = events.find(e => e.year === year)
+
+                if (!event || !showEvents) return (<circle
+                    key={`${index}-small`}
+                    cx={cx}
+                    cy={cy}
+                    r={8}
+                    fill= {chartConfig.small.color}
+                  />)
+
+                const textX = cx - 80
+                const textY = cy - 15
+                const padding = 4
+                const fontSize = 14
+                
+              const textWidth = event.name.length * 8
+              const textHeight = fontSize + padding * 2
+
+              return (
+                <g>
+                  <circle
+                    key={`${index}-small`}
+                    cx={cx}
+                    cy={cy}
+                    r={8}
+                    fill={"red"}
+                  />
+                  <rect
+                    x={textX - padding}
+                    y={textY - fontSize}
+                    width={textWidth + padding * 2}
+                    height={textHeight}
+                    fill="#7af0a8"
+                    rx={3} 
+                    ry={3}
+                  />
+                  <text
+                    className={`${viga.className} text-[14px]`}
+                    x={textX}
+                    y={textY}
+                    fill="#13452D"
+                  >
+                    {event.name}
+                  </text>
+                </g>
+              )
+              }}
+
+            >
+            </Line>
+             }
+
+            {/* Medium */}
+            {
+              showMedium &&
+            <Line
+              dataKey="medium"
+              type="natural"
+              stroke={chartConfig.medium.color}
+              strokeWidth={2}
+               dot={(props) => {
+                    const { cx, cy, payload, index } = props
+                    const year = payload["publicationyear"] // x-axis key (e.g., "year")
+
+                    return (
+                      <circle
+                        key={`${index}-medium`}
+                        cx={cx}
+                        cy={cy}
+                        r={4}
+                        fill={(eventYears.includes(year) && showEvents) ? "red" : chartConfig.medium.color}
+                      />
+                    )
+                  }}
+              activeDot={(props) => {
+                const { cx, cy, payload, index } = props
+                const year = payload["publicationyear"]
+                const event = events.find(e => e.year === year)
+
+                if (!event || !showEvents) return (<circle
+                    key={`${index}-medium`}
+                    cx={cx}
+                    cy={cy}
+                    r={8}
+                    fill= {chartConfig.medium.color}
+                  />)
+
+                const textX = cx - 80
+                const textY = cy - 15
+                const padding = 4
+                const fontSize = 14
+                
+              const textWidth = event.name.length * 8
+              const textHeight = fontSize + padding * 2
+
+              return (
+                <g>
+                  <circle
+                    key={`${index}-medium`}
+                    cx={cx}
+                    cy={cy}
+                    r={8}
+                    fill={"red"}
+                  />
+                  <rect
+                    x={textX - padding}
+                    y={textY - fontSize}
+                    width={textWidth + padding * 2}
+                    height={textHeight}
+                    fill="#7af0a8"
+                    rx={3} 
+                    ry={3}
+                  />
+                  <text
+                    className={`${viga.className} text-[14px]`}
+                    x={textX}
+                    y={textY}
+                    fill="#13452D"
+                  >
+                    {event.name}
+                  </text>
+                </g>
+              )
+              }}
+
+            >
+            </Line>
+            }
+
           </LineChart>
         </ChartContainer>
-        }
+       
       </CardContent>
     </Card>
   )

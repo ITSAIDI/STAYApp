@@ -52,7 +52,6 @@ export default function time_analysis() {
 
   const [channelsData,setChannelsData] = useState([])
 
-  const [videosData,setVideosData] = useState([])
   const [videosDataLarge,setVideosDataLarge] = useState([])
   const [videosDataSmall,setVideosDataSmall] = useState([])
   const [videosDataMedium,setVideosDataMedium] = useState([])
@@ -208,21 +207,24 @@ export default function time_analysis() {
   {
     try 
     {
-      let res = await fetch('/api/time_analysis/videos')
-      let data = await res.json()
-      setVideosData(data)
 
-      res = await fetch('/api/time_analysis/videosLargeChannels')
-      data = await res.json()
+      let res = await fetch('/api/time_analysis/videosLargeChannels')
+      let data = await res.json()
       setVideosDataLarge(data)
+
+      //console.log('videosLargeChannels ',data)
 
       res = await fetch('/api/time_analysis/videoSmallChannels')
       data = await res.json()
       setVideosDataSmall(data)
 
+      //console.log('videoSmallChannels ',data)
+
       res = await fetch('/api/time_analysis/videosMediumChannels')
       data = await res.json()
       setVideosDataMedium(data)
+
+      //console.log('videosMediumChannels ',data)
 
     } 
     catch (error) {
@@ -320,6 +322,7 @@ export default function time_analysis() {
 
   useEffect(()=>{fetchWithDelay()},[])
 
+  const ThreeDotColor = '#13452D'
 
   return (
     <div className="p-2 flex flex-col gap-2 w-full">
@@ -335,32 +338,32 @@ export default function time_analysis() {
       <div className="grid grid-cols-2 gap-2">
         {channelsLoading ? (
            <div className="mt-[200px] ml-[100px] mb-[100%]">
-             <ThreeDot variant="brick-stack"  size="small" color='#7af0a8'/>
+             <ThreeDot variant="brick-stack"  size="small" color={ThreeDotColor}/>
            </div>
          
         ):<TimeChart  chartInfos = {channelsMetadata}  chartData = {channelsData} events = {Events} showEvents={showEvents} showCumulOption = {true}/>}
         
         {(videosLoading && !channelsLoading) ? (
            <div className="mt-[200px] ml-[200px] mb-[100%]">
-             <ThreeDot variant="brick-stack"  size="small" color='#7af0a8'/>
+             <ThreeDot variant="brick-stack"  size="small" color={ThreeDotColor}/>
            </div>
          
         ):
-        <TimeChart  chartInfos = {videosMetadata}  chartData = {videosData} categoryState = {videosCategory} categoryFunction= {setVideosCategory} events = {Events} showEvents={showEvents} showCumulOption = {true}/>}
+        <VideosChart  chartInfos = {videosMetadata} categoryState = {videosCategory} categoryFunction= {setVideosCategory} events = {Events} showEvents={showEvents} chartDataLarge={videosDataLarge} chartDataSmall={videosDataSmall} chartDataMedium={videosDataMedium} />}
         
       </div>
 
       <div className="grid grid-cols-2 gap-2">
          {(!videosLoading && !channelsLoading && commentsLoading) ? (
            <div className="mt-[200px] ml-[200px] mb-[100%]">
-             <ThreeDot variant="brick-stack"  size="small" color='#7af0a8'/>
+             <ThreeDot variant="brick-stack"  size="small" color={ThreeDotColor}/>
            </div>
          
         ):<TimeChart  chartInfos = {commentsMetadata}  chartData = {commentsData} categoryState = {commentsCategory} categoryFunction= {setCommentsCategory} events = {Events} showEvents={showEvents}/>}
         
         {(!videosLoading && !channelsLoading && !commentsLoading && durationsLoading) ? (
            <div className="mt-[200px] ml-[200px] mb-[100%]">
-             <ThreeDot variant="brick-stack"  size="small" color='#7af0a8'/>
+             <ThreeDot variant="brick-stack"  size="small" color={ThreeDotColor}/>
            </div>
          
         ):<TimeChart  chartInfos = {durationsMetadata}  chartData = {durationsData} categoryState = {durationsCategory} categoryFunction= {setDurationsCategory} events = {Events} showEvents={showEvents}/>}
@@ -370,13 +373,13 @@ export default function time_analysis() {
       <div className="grid grid-cols-2 gap-2">
          {(!videosLoading && !channelsLoading && !commentsLoading && !durationsLoading && channelSeasonalityLoading) ? (
            <div className="mt-[200px] ml-[200px] mb-[100%]">
-             <ThreeDot variant="brick-stack"  size="small" color='#7af0a8'/>
+             <ThreeDot variant="brick-stack"  size="small" color={ThreeDotColor}/>
            </div>
          
         ):<SeasonalityChart chartInfos={channelSeasonalityMetadata} chartData={channelSeasonalityData} />}
          {(!videosLoading && !channelsLoading && !commentsLoading && !durationsLoading && !channelSeasonalityLoading && videoSeasonalityLoading) ? (
            <div className="mt-[200px] ml-[200px] mb-[100%]">
-             <ThreeDot variant="brick-stack"  size="small" color='#7af0a8'/>
+             <ThreeDot variant="brick-stack"  size="small" color={ThreeDotColor}/>
            </div>
          
         ):<SeasonalityChart chartInfos={videoSeasonalityMetadata} chartData={videoSeasonalityData} />}
