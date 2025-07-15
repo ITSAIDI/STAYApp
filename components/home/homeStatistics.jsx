@@ -1,14 +1,29 @@
+'use client'
 
+import { useEffect, useState } from "react"
 import { faTv, faPlay, faComments } from "@fortawesome/free-solid-svg-icons"
 import HomeBox from "./homeBox"
 
+export default function HomeStatistics() {
+  const [stats, setStats] = useState({
+    numChannels: 0,
+    numVideos: 0,
+    numComments: 0
+  })
 
-export default async function HomeStatistics() {
-  const res = await fetch(`${process.env.BASE_URL}/api/statistics`);
+  useEffect(() => {
+    async function fetchStats() {
+      try {
+        const res = await fetch("/api/statistics")
+        const data = await res.json()
+        setStats(data)
+      } catch (error) {
+        console.error("Failed to fetch statistics", error)
+      }
+    }
 
-  const stats = await res.json();
-
-  //console.log('stats :',stats)
+    fetchStats()
+  }, [])
 
   const boxes = [
     {
@@ -32,7 +47,7 @@ export default async function HomeStatistics() {
       title: 'Number of comments',
       icon: faComments
     }
-  ];
+  ]
 
   return (
     <div className="flex flex-row gap-3 justify-between">
@@ -47,5 +62,5 @@ export default async function HomeStatistics() {
         />
       ))}
     </div>
-  );
+  )
 }
