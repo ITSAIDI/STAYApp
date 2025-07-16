@@ -21,17 +21,17 @@ export async function GET() {
             videos.id_video,
             videos.miniature,
             videos.titre,
-            videos.date_publication,
+            videos.date_publication::date AS date_publication,
             videos.description,
             videos.tags,
             videos.duree,
             videos_metriques.nombre_vues,
             videos_metriques.nombre_likes,
-            videos_metriques.date_releve_video
+            videos_metriques.date_releve_video::date AS date_releve_video
         FROM videos
         INNER JOIN videos_metriques 
-        ON videos.id_video = videos_metriques.id_video 
-        AND videos_metriques.date_releve_video = '2025-05-21'
+            ON videos.id_video = videos_metriques.id_video 
+            AND videos_metriques.date_releve_video = '2025-05-21'
         LIMIT 10;
 
         `

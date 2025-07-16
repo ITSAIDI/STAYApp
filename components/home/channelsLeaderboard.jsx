@@ -72,6 +72,8 @@ export default function ChannelsLeaderboard() {
       const res = await fetch('/api/channels')
       channelsInit.current = await res.json()
       setChannels(channelsInit.current)
+
+      console.log('ChNnels: ',channelsInit.current)
     } 
     catch (error) {
       console.log('Failing while fetching channels ',error)
