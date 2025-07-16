@@ -32,10 +32,10 @@ export default function VideosLeaderboard() {
 
   const testVideo = {
     order : 1,
-    videoId:"NRzflSM89iI",
-    thumbnail :"https://i.ytimg.com/vi/NRzflSM89iI/maxresdefault.jpg", 
-    title:"Mes livres préférés pour l'AUTONOMIE/AUTOSUFFISANCE : potager, élevage, cuisine, transfo ect)",
-    publicationDate:"2021-05-07",
+    id_video:"NRzflSM89iI",
+    miniature :"https://i.ytimg.com/vi/NRzflSM89iI/maxresdefault.jpg", 
+    titre:"Mes livres préférés pour l'AUTONOMIE/AUTOSUFFISANCE : potager, élevage, cuisine, transfo ect)",
+    date_publication:"2021-05-07",
     description:`00:00 Le guide terre vivante de l'autonomie au jardin 
                   04:06 Le traité Rustica des arbres fruitiers
                   05:08 Jardin-Forêt de Fabrice Desjours
@@ -89,11 +89,13 @@ export default function VideosLeaderboard() {
     tags:['permaculture', 'autonomie', 'jardinage','permacul', 'autonomdce', 'marichage'],
     statChoice:'nombre_vues',
     videoStats:{
-      nombre_vues : {nombre : 48787,icon :faEye},
-      nombre_likes : {nombre:1848,icon :faThumbsUp}
+      nombre_vues : {number : 48787,icon :faEye},
+      nombre_likes : {number:1848,icon :faThumbsUp}
     },
+    duree:120,
     
   }
+  const videosTest = [testVideo,testVideo,testVideo]
 
 
   return (
@@ -115,8 +117,13 @@ export default function VideosLeaderboard() {
         </div>
 
         {/* Videos List */}
-        <div className="flex flex-col items-center max-h-56 overflow-y-scroll scrollbar scrollbar-thumb-green1 scrollbar-track-white overflow-x-hidden">
-          <VideoSection videoInfos = {testVideo} />
+        <div className="flex flex-col gap-2 max-h-[350px] overflow-y-scroll scrollbar scrollbar-thumb-green1 scrollbar-track-white overflow-x-hidden">
+          {
+            videosTest.map((video,index)=>
+            <VideoSection
+             key={index}
+             videoInfos={video}  />)
+          }
         </div>
 
 

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { Pool } from 'pg'
 
+
 // PostgreSQL connection
 
 const pool = new Pool({
