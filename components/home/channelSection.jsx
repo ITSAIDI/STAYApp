@@ -30,7 +30,7 @@ export default function ChannelSection({order,profileURL,channelName,creationDat
             quality={100} />
             <div className='flex flex-col'>
               <h1 className='truncate max-w-52 xl:max-w-xs text-[15px]'>{channelName}</h1>
-              <p className='text-gray-400 text-[14px]'>{creationDate}</p>
+              <p className='text-gray-400 text-[14px]'>{new Date(creationDate).toLocaleDateString('fr-FR')}</p>
             </div>
         </div>
 

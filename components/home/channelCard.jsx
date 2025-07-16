@@ -22,8 +22,8 @@ export default function ChannelCard({profileURL,channelName,creationDate,label,c
             <div className={`flex flex-col gap-1 ${poppins.className}`}>
                 <h1 className={`${viga.className} text-gray-500`}>Name of channel</h1>
                 <p className='max-w-[270px] overflow-x-auto whitespace-nowrap text-left'>{channelName}</p>
-                <h1 className={`${viga.className} text-gray-500`}>Created at (yyyy/mm/dd)</h1>
-                <p>{creationDate}</p>
+                <h1 className={`${viga.className} text-gray-500`}>Created at (dd/mm/yyyy)</h1>
+                <p>{new Date(creationDate).toLocaleDateString('fr-FR')}</p>
                 <h1 className={`${viga.className} text-gray-500`}>Pertinent ?</h1>
                 {label ? <p>Yes</p>: <p>No</p>}
             </div>

@@ -44,14 +44,6 @@ const collectionDateList = [
     value: "2025-05-19", // YYYY-MM-DD format adapted to what PostgreSQL requires.
     label: "19/05/2025", // What the user see
   },
-  {
-    value: "2025-06-15",
-    label: "15/06/2025",
-  },
-    {
-    value: "2025-08-09",
-    label: "09/08/2025",
-  }
 ]
 
 export default function ChannelsLeaderboard() {
@@ -167,20 +159,12 @@ export default function ChannelsLeaderboard() {
         </div>
         
         {/* Channels Sorting and Collection Date */}
-        <div className="flex flex-wrap mb-3 justify-between gap-2">
-
+        <div className="flex flex-wrap gap-3 mt-2 items-center">
             <Combobox value = {statChoice} setValue={setStatChoice} itemsList={sortingList} text={"Sort channels"}/>
             <Combobox value = {order} setValue={setOrder} itemsList={orderingList} text={"Select order"} />
             <Combobox value = {collectionDate} setValue={setCollectionDate} itemsList={collectionDateList} text={"Collection Date"} />
-
-        </div>
-
-        {/* Creation Date Range*/}
-        <div className="flex flex-row mb-3 gap-5">
-
-          <Calendar22 title={'Creation Date (From)'} date={creationDateFrom} setDate={setCreationDateFrom}/>
-          <Calendar22 title={'Creation Date (To)'} date={creationDateTo} setDate={setCreationDateTo}/>
-          
+            <Calendar22 title={'Creation Date (From)'} date={creationDateFrom} setDate={setCreationDateFrom}/>
+            <Calendar22 title={'Creation Date (To)'} date={creationDateTo} setDate={setCreationDateTo}/>
         </div>
 
 
