@@ -161,7 +161,7 @@ export default function ChannelsLeaderboard() {
         </div>
         
         {/* Channels Sorting and Collection Date */}
-        <div className="flex flex-wrap gap-3 mt-2 items-center">
+        <div className="flex flex-wrap gap-3 mt-2 items-baseline-last">
             <Combobox value = {statChoice} setValue={setStatChoice} itemsList={sortingList} text={"Sort channels"}/>
             <Combobox value = {order} setValue={setOrder} itemsList={orderingList} text={"Select order"} />
             <Combobox value = {collectionDate} setValue={setCollectionDate} itemsList={collectionDateList} text={"Collection Date"} />
