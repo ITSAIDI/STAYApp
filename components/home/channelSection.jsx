@@ -15,7 +15,7 @@ export default function ChannelSection({order,profileURL,channelName,creationDat
   const safeChoice = statChoice || 'nombre_vues_total'
   const [showCard,setShowCard] = useState(false)
   return (
-    <div className='flex flex-col items-center hover:bg-gray-100 transition-colors duration-300 cursor-pointer w-full rounded-lg'>
+    <div className='flex flex-col items-center hover:bg-gray-100 transition-colors duration-300 cursor-pointer w-full rounded-lg text-[14px] xl:text-[16px]'>
       {/* Channel Section */}
       <div 
         onClick={()=>{setShowCard(true)}}
@@ -31,14 +31,14 @@ export default function ChannelSection({order,profileURL,channelName,creationDat
             alt='channel logo'
             quality={100} />
             <div className='flex flex-col'>
-              <h1 className='truncate max-w-52 xl:max-w-xs text-[15px]'>{channelName}</h1>
-              <p className='text-gray-400 text-[14px]'>{transformDateAddOneDay(creationDate)}</p>
+              <h1 className='truncate max-w-52 xl:max-w-xs'>{channelName}</h1>
+              <p className='text-gray-400'>{transformDateAddOneDay(creationDate)}</p>
             </div>
         </div>
 
         <div className='flex flex-col items-end gap-1'>
-              {label ? <Tooltip text={'Pertinent'} styleText={'bg-green-300 text-green1 px-1.5 py-0  rounded-xl text-[14px]'} message={'Pertinent to the self-sufficiency phenomenon'} /> : <p className='bg-red-300 text-green1 px-1.5 py-0 rounded-xl text-[14px]'>Not pertinent</p>}
-              <div className='flex flex-row gap-1 items-baseline text-[14px]'>
+              {label ? <Tooltip text={'Pertinent'} styleText={'bg-green-300 text-green1 px-1.5 py-0  rounded-xl'} message={'Pertinent to the self-sufficiency phenomenon'} /> : <p className='bg-red-300 text-green1 px-1.5 py-0 rounded-xl'>Not pertinent</p>}
+              <div className='flex flex-row gap-1 items-baseline'>
                 <FontAwesomeIcon className='text-green1' icon={channelStats[safeChoice]['icon']}/>
                 <p className='truncate max-w-20 text-gray-400'>{new Intl.NumberFormat('fr-FR').format(channelStats[safeChoice]['number'])}</p>
               </div>
