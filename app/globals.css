@@ -5,6 +5,22 @@
 
 @config "../tailwind.config.js";
 
+/* Apply to elements with class 'scrollbar-rounded' */
+.scrollbar-rounded::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-rounded::-webkit-scrollbar-track {
+  background: #bbf7d0; /* Tailwind green-200 */
+  border-radius: 0.5rem;
+}
+
+.scrollbar-rounded::-webkit-scrollbar-thumb {
+  background-color: #22c55e; /* Tailwind green1 */
+  border-radius: 0.5rem;
+}
+
+
 @theme inline {
 
   --radius-sm: calc(var(--radius) - 4px);
