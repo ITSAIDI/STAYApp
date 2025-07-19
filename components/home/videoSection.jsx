@@ -22,16 +22,19 @@ export default function VideoSection({ videoInfos,statChoice }) {
         className='hover:shadow-lg hover:scale-[1.02] transition-all duration-300 ease-in-out'
        >
           <div className="flex flex-row items-center gap-3">
+            
             <h1 className={`${viga.className} text-green1`}>{videoInfos.order}</h1>
-              <Image
-              src={videoInfos.miniature}
-              alt="video thumbnail"
-              layout="responsive"
-              width={16}
-              height={9}
-              className="rounded-sm"
-              quality={100}
-            />
+            <div className="relative w-full aspect-video">
+                <Image
+                  src={videoInfos.miniature}
+                  alt="video thumbnail"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="rounded-sm object-cover"
+                  quality={100}
+                />
+            </div>
+
           </div>
 
         <div className={`${viga.className} flex flex-row justify-between ml-5 mt-1`}>

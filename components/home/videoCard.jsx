@@ -12,15 +12,16 @@ export default function VideoCard({videoInfos}) {
         {/*Upper section*/}
         <div className='flex flex-row w-full'>
             <div className='flex flex-col gap-1 min-w-[400px] xl:min-w-[500px]'>
-                 <Image
+                 <div className="relative w-full aspect-video">
+                    <Image
                     src={videoInfos.miniature}
                     alt="video thumbnail"
-                    layout="responsive"
-                    width={20}
-                    height={20}
-                    className="rounded-sm"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="rounded-sm object-cover"
                     quality={100}
-                />
+                    />
+                </div>
                 <div className= {`flex flex-row justify-between ${viga.className}`}>
 
                    <div className='flex flex-row gap-1.5 items-baseline'>

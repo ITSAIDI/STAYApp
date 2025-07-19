@@ -62,6 +62,7 @@ export default function ChannelsLeaderboard() {
   const [query,setQuery] = useState('')
   
   //console.log('creationDateTo :',formatDate(creationDateTo))
+  //console.log('query:  ',query)
 
 
 
@@ -73,7 +74,7 @@ export default function ChannelsLeaderboard() {
       channelsInit.current = await res.json()
       setChannels(channelsInit.current)
 
-      console.log('ChNnels: ',channelsInit.current)
+      //console.log('ChNnels: ',channelsInit.current)
     } 
     catch (error) {
       console.log('Failing while fetching channels ',error)
@@ -143,7 +144,7 @@ export default function ChannelsLeaderboard() {
   
 
   return (
-    <div className='flex flex-col bg-white rounded-lg mt-2 p-2 w-full h-lvh'>
+    <div className='flex flex-col bg-white rounded-lg mt-2 p-2 w-full mb-2'>
 
         {/* Title */}
         <h1 className = {`${viga.className} text-xl text-green1`}>Channels</h1>
@@ -171,7 +172,7 @@ export default function ChannelsLeaderboard() {
 
 
         {/* Channels list */}
-        <div className="flex flex-col items-start overflow-y-auto scrollbar scrollbar-thumb-green1 scrollbar-track-white overflow-x-hidden">
+        <div className="flex flex-col items-start overflow-y-scroll max-h-svh scrollbar scrollbar-thumb-green1 scrollbar-track-white overflow-x-hidden">
           {
             channels.map((channel,index)=>
             (
@@ -216,3 +217,4 @@ export default function ChannelsLeaderboard() {
     </div>
   )
 }
+
