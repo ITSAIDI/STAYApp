@@ -143,7 +143,7 @@ export default function ChannelsLeaderboard() {
   
 
   return (
-    <div className='flex flex-col bg-white rounded-lg mt-2 p-2 w-full h-full'>
+    <div className='flex flex-col bg-white rounded-lg mt-2 p-2 w-full h-lvh'>
 
         {/* Title */}
         <h1 className = {`${viga.className} text-xl text-green1`}>Channels</h1>
@@ -171,7 +171,7 @@ export default function ChannelsLeaderboard() {
 
 
         {/* Channels list */}
-        <div className="flex flex-col items-start max-h-56 overflow-y-scroll scrollbar scrollbar-thumb-green1 scrollbar-track-white overflow-x-hidden">
+        <div className="flex flex-col items-start overflow-y-auto scrollbar scrollbar-thumb-green1 scrollbar-track-white overflow-x-hidden">
           {
             channels.map((channel,index)=>
             (

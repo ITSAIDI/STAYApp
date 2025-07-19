@@ -71,7 +71,7 @@ export default function VideosLeaderboard() {
 
 
   return (
-    <div className='flex flex-col bg-white rounded-lg mt-2 p-2 w-full h-full'>
+    <div className='flex flex-col bg-white rounded-lg mt-2 p-2 w-full h-[calc(100svh-1rem)]'>
 
         {/* Title */}
         <h1 className = {`${viga.className} text-xl text-green1`}>Videos</h1>
@@ -89,13 +89,13 @@ export default function VideosLeaderboard() {
         </div>
 
         {/* Videos List */}
-        <div className="flex flex-col gap-2 max-h-[350px] overflow-y-scroll scrollbar scrollbar-thumb-green1 scrollbar-track-white overflow-x-hidden">
+        <div className="flex flex-col overflow-y-auto scrollbar scrollbar-thumb-green1 scrollbar-track-white overflow-x-hidden">
           {
-            videosTest.map((video,index)=>
+            videos.map((video,index)=>
             <VideoSection
              key={index}
              statChoice = {'nombre_vues'}
-             videoInfos={video}  />)
+             videoInfos={{ ...video, order: index + 1 }}  />)
           }
         </div>
 

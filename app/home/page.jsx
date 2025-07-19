@@ -5,9 +5,9 @@ import HomeStatistics from "@/components/home/homeStatistics"
 
 export default function home() {
   return (
-    <div className="flex flex-col p-3">
+    <div className="flex flex-col p-3 h-full">
        <HomeStatistics  />
-       <div className="grid grid-cols-2 gap-2 w-full">
+       <div className="grid grid-cols-2 gap-2 w-full h-full">
           <ChannelsLeaderboard />
           <VideosLeaderboard  />
        </div>
