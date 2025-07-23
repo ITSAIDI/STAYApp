@@ -1,36 +1,27 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<p align="center">
+    <img src="./public/logo.png" alt="STAYApp Banner" width="400" height="400" />
+</p>
 
-## Getting Started
+<p align="center">
+    <a href="https://drive.google.com/file/d/15hCqAy40LhObQO6TIlQ7r9s6gfZu2KF0/view?usp=sharing" target="_blank">
+        <img src="./assets/drive.png" alt="HuggingFace" width="50" height="50" />
+    </a>
+    <a href="https://www.youtube.com/watch?v=1-orPAxxu6Q" target="_blank">
+        <img src="./assets/youtube.png" alt="youtube" width="50" height="35" />
+    </a>
+</p>
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+# Textra
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Welcome to the documentation repository for Textra tool. We combine OCR and NLP to extract useful information from french invoices With height accuracy and speed.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Inference Pipeline
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+<p align="center">
+    <img src="./assets/Textra_Pipeline.png" alt="Textra Banner"/>
+</p>
 
-## Learn More
+## Demo
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+https://github.com/user-attachments/assets/43426bf5-b659-47d9-b889-79e475825a61
