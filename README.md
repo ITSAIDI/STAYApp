@@ -3,7 +3,7 @@
     <img src="./public/logo.png" alt="STAYApp Banner" width="100" height="100" />
 </p>
 
-<p style="display: flex; align-items: baseline; justify-content: center; gap: 10px;">
+<p style="display: flex; align-items: baseline; justify-content: center;">
     <a href="https://drive.google.com/file/d/15hCqAy40LhObQO6TIlQ7r9s6gfZu2KF0/view?usp=sharing" target="_blank">
         <img src="./assets/drive.png" alt="HuggingFace" width="50" height="50" />
     </a>
