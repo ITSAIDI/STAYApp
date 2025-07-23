@@ -7,7 +7,7 @@
     <a href="https://drive.google.com/file/d/15hCqAy40LhObQO6TIlQ7r9s6gfZu2KF0/view?usp=sharing" target="_blank">
         <img src="./assets/drive.png" alt="HuggingFace" width="50" height="50" />
     </a>
-    <a href="https://www.youtube.com/watch?v=1-orPAxxu6Q" target="_blank">
+    <a href="https://www.youtube.com/watch?v=GrcDQiGxUqw" target="_blank">
         <img src="./assets/youtube.png" alt="youtube" width="50" height="50" />
     </a>
 </p>
@@ -32,4 +32,6 @@ The project also contributes to the creation of a **FAIR** (**Findable, Accessib
 
 ## Demo
 
-https://github.com/user-attachments/assets/43426bf5-b659-47d9-b889-79e475825a61
+<a href="https://www.youtube.com/watch?v=GrcDQiGxUqw" target="_blank">
+    <img src="./assets/youtube.png" alt="youtube" width="50" height="50" />
+</a>
