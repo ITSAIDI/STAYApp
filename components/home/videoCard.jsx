@@ -41,7 +41,7 @@ export default function VideoCard({videoInfos}) {
                     >
                     <FontAwesomeIcon
                         icon={faYoutube}
-                        className="text-red-500 text-[20px] xl:text-[26px]"
+                        className="text-green1 text-[20px] xl:text-[26px]"
                     />
                     </a>
 

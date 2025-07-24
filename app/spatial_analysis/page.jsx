@@ -39,7 +39,7 @@ export default function SpatialAnalysis() {
   return (
     <div>
       <div className='flex flex-row gap-2 m-2'>
-        <h1 className={`${viga.className} text-green1`}>Self-sufficiency cartography</h1>
+        <h1 className={`${viga.className} text-green1`}>Self-sufficiency cartography-videos</h1>
         <div className='relative group'>
           <FontAwesomeIcon className='text-green1'  icon={faInfoCircle}/>
           <p className={`absolute top-0 left-5 opacity-0 mb-2 bg-green-200 text-green1 text-sm  px-2 py-1 rounded group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap ${viga.className}`}>
