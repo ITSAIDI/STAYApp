@@ -1,8 +1,8 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faYoutube,faXmark } from '@fortawesome/free-brands-svg-icons'
+import { faYoutube } from '@fortawesome/free-brands-svg-icons'
+import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { viga } from '@/fonts'
 import Image from 'next/image'
-
 
 export default function VideoBox({videoInfos}) {
    function getColor()
@@ -17,15 +17,20 @@ export default function VideoBox({videoInfos}) {
    const flagColor = getColor()
   return (
     <div className='flex flex-col group hover:scale-[1.02] transition-all duration-300 ease-in-out'>
-      <div className='rounded-md' style={{ backgroundColor: flagColor }}>
-        <Image
-          src={videoInfos.miniature}
-          alt="video thumbnail"
-          width={200}
-          height={112} // 16:9 aspect
-          className="rounded-md object-cover w-full ml-2"
-        />
-      </div>
+    <div className="rounded-md relative">
+      <Image
+        src={videoInfos.miniature}
+        alt="video thumbnail"
+        width={200}
+        height={112} // 16:9 aspect
+        className="rounded-md object-cover w-full mt-3"
+      />
+      <div
+    className="absolute top-0 right-0 w-[40px] h-[30px] rounded-sm"
+    style={{ backgroundColor: flagColor }}
+  ></div>
+
+    </div>
     
       <div className='flex flex-row gap-2 mt-2'>
         <a

@@ -16,7 +16,7 @@ import { ThreeDot } from "react-loading-indicators"
 // Your custom icon
 const customIcon = new L.Icon({
   iconUrl: '/frenchMarker.png',
-  iconSize: [32, 32],
+  iconSize: [50, 50],
   iconAnchor: [16, 32],
   popupAnchor: [0, -32],
 });
@@ -28,7 +28,7 @@ function MarkerCluster({ entities }) {
   useEffect(() => {
     const clusterGroup = L.markerClusterGroup({
       showCoverageOnHover: false,
-      zoomToBoundsOnClick: true,
+      zoomToBoundsOnClick: false,
       iconCreateFunction: (cluster) => {
         const count = cluster.getChildCount();
         const size = 40;
@@ -77,14 +77,20 @@ function MarkerCluster({ entities }) {
     map.addLayer(clusterGroup);
 
     
-    clusterGroup.on('clusterclick', function (a) {
-  const bounds = a.propagatedFrom.getBounds();
-  map.fitBounds(bounds, {
-    padding: [20, 20],
-    maxZoom: 10, // Ajuste à ta convenance
-    animate: true,
+  clusterGroup.on('clusterclick', function (e) {
+    const cluster = e.propagatedFrom;
+    const markers = cluster.getAllChildMarkers();
+
+    const bounds = L.latLngBounds(markers.map(marker => marker.getLatLng()));
+    
+    // Zoom just enough to show these markers in their real positions
+    map.fitBounds(bounds, {
+      padding: [20, 20],
+      animate: true,
+      maxZoom: 12, // control this to prevent zooming too far out
+    });
   });
-});
+
 
 
     return () => {
@@ -154,7 +160,6 @@ export default function MapComponent({ entities }) {
       <MapContainer
         center={[46.603354, 1.888334]}
         zoom={6}
-        minZoom={6}
         scrollWheelZoom={false}
         maxBounds={[[41.0, -5.0], [51.5, 10.0]]}
         maxBoundsViscosity={1.0}
