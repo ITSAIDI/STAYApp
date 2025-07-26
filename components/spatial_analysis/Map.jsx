@@ -11,6 +11,8 @@ import { X } from 'lucide-react'; // Close icon (if using Lucide)
 import VideoBox from './videoBox';
 import { viga } from '@/fonts';
 import { ThreeDot } from "react-loading-indicators"
+import TagsPopup from './tagsPopup';
+
 
 
 // Your custom icon
@@ -32,32 +34,27 @@ function MarkerCluster({ entities }) {
       iconCreateFunction: (cluster) => {
         const count = cluster.getChildCount();
         const size = 40;
+        let maxCount = 22;
+        const normalized = Math.min(count / maxCount, 1);
+        const hue = 120 - normalized * 120;
+        const color = `hsl(${hue}, 80%, 45%)`;
 
-      // Normalize count to a range (e.g., 0 to 100)
-      let maxCount = 22; 
-      const normalized = Math.min(count / maxCount, 1); // Clamp to [0,1]
-
-      // Map to hue: 120 (green) → 0 (red)
-      const hue = 120 - normalized * 120;
-      const color = `hsl(${hue}, 80%, 45%)`;
-
-      return L.divIcon({
-        html: `<div class="custom-cluster-icon" style="
-          width: ${size}px;
-          height: ${size}px;
-          line-height: ${size}px;
-          background-color: ${color};
-          border: 2px solid ${color};
-          border-radius: 50%;
-          color: white;
-          font-weight: bold;
-          text-align: center;
-        ">${count}</div>`,
-        className: 'marker-cluster',
-        iconSize: [size, size],
-      });
+        return L.divIcon({
+          html: `<div class="custom-cluster-icon" style="
+            width: ${size}px;
+            height: ${size}px;
+            line-height: ${size}px;
+            background-color: ${color};
+            border: 2px solid ${color};
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+          ">${count}</div>`,
+          className: 'marker-cluster',
+          iconSize: [size, size],
+        });
       },
-
     });
 
     entities.forEach((entity) => {
@@ -72,26 +69,38 @@ function MarkerCluster({ entities }) {
       });
 
       clusterGroup.addLayer(marker);
+      marker.entity = entity;
     });
 
     map.addLayer(clusterGroup);
 
-    
-  clusterGroup.on('clusterclick', function (e) {
-    const cluster = e.propagatedFrom;
-    const markers = cluster.getAllChildMarkers();
+    // Zoom into cluster
+    clusterGroup.on('clusterclick', function (e) {
+      const cluster = e.propagatedFrom;
+      const markers = cluster.getAllChildMarkers();
+      const bounds = L.latLngBounds(markers.map(marker => marker.getLatLng()));
 
-    const bounds = L.latLngBounds(markers.map(marker => marker.getLatLng()));
-    
-    // Zoom just enough to show these markers in their real positions
-    map.fitBounds(bounds, {
-      padding: [20, 20],
-      animate: true,
-      maxZoom: 12, // control this to prevent zooming too far out
+      map.fitBounds(bounds, {
+        padding: [20, 20],
+        animate: true,
+        maxZoom: 12,
+      });
     });
-  });
 
+    // Cluster Hover: emit hovered entity list
+    clusterGroup.on('clustermouseover', function (e) {
+      const cluster = e.propagatedFrom;
+      const markers = cluster.getAllChildMarkers();
 
+      const hovered = markers.map(m => m.entity.id_entite_spatiale);
+      //const position = cluster.getLatLng(); // ← position du cluster
+
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('cluster-hover', {
+          detail: hovered
+        }));
+      }
+    });
 
     return () => {
       map.removeLayer(clusterGroup);
@@ -101,11 +110,15 @@ function MarkerCluster({ entities }) {
   return null;
 }
 
+
 export default function MapComponent({ entities }) {
   const [selectedEntity, setSelectedEntity] = useState(null);
+  const [hoveredEntities, setHoveredEntities] = useState(null);
   const [entityVideos, setEntityVideos] = useState([]);
   const [videosLoading, setVideosLoading] = useState(true);
   const ThreeDotColor = '#13452D'
+  const [showTagsPopup,setshowTagsPopup] = useState(true)
+
 
   async function getEntityVideos() 
   {
@@ -154,27 +167,51 @@ export default function MapComponent({ entities }) {
     fetchVideos();
   }, [selectedEntity]);
 
+  useEffect(() => {
+    const handleClusterHover = (e) => {
+      if (e.detail) {
+        setHoveredEntities(e.detail);
+        setshowTagsPopup(true);
+        //console.log(e.detail)
+      } else {
+        setHoveredEntities(null);
+      }
+    };
+
+    window.addEventListener('cluster-hover', handleClusterHover);
+    return () => window.removeEventListener('cluster-hover', handleClusterHover);
+  }, []);
+
+
+  console.log('HoveredEntities',hoveredEntities)
 
   return (
     <div className="relative h-screen w-full">
-      <MapContainer
-        center={[46.603354, 1.888334]}
-        zoom={6}
-        scrollWheelZoom={false}
-        maxBounds={[[41.0, -5.0], [51.5, 10.0]]}
-        maxBoundsViscosity={1.0}
-        style={{ height: '100%', width: '100%' }}
-      >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <MarkerCluster
-          entities={entities}
-          onMarkerClick={(entity) => setSelectedEntity(entity)}
-        />
-      </MapContainer>
 
+      <div className="relative h-screen w-full">
+        <MapContainer
+          center={[46.603354, 1.888334]}
+          zoom={6}
+          scrollWheelZoom={false}
+          style={{ height: '100%', width: '100%' }}
+        >
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          <MarkerCluster
+            entities={entities}
+            onMarkerClick={(entity) => setSelectedEntity(entity)}
+          />
+
+        </MapContainer>
+
+        {/* Tags ToolTip of each cluster */}
+        {
+          (showTagsPopup) && (hoveredEntities !== null) && <TagsPopup entitiesIds={hoveredEntities} setshow={setshowTagsPopup} />     
+        }
+      </div>
+       
       {/* Side Panel */}
       <div
         className={`fixed top-0 right-0 h-full w-[400px] xl:w-[500px] bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-[1000] ${
