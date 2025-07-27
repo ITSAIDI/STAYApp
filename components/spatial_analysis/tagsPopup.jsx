@@ -45,7 +45,7 @@ export default function TagsPopup({entitiesIds,setshow}) {
         })
         const data = await res.json()
 
-        console.log('Videos Tags  ',data)
+        //console.log('Videos Tags  ',data)
         if(data) 
             {
                 setTagsSorted(getTags(data))

@@ -183,7 +183,7 @@ export default function MapComponent({ entities }) {
   }, []);
 
 
-  console.log('HoveredEntities',hoveredEntities)
+  //console.log('HoveredEntities',hoveredEntities)
 
   return (
     <div className="relative h-screen w-full">

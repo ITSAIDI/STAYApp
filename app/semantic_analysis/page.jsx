@@ -1,7 +1,10 @@
-import React from 'react'
+import KeywordsCloud from "@/components/semantic_analysis/keywordsCloud"
+
 
 export default function semantic_analysis() {
   return (
-    <div>semantic analysis</div>
+    <div>
+      <KeywordsCloud  />
+    </div>
   )
 }
