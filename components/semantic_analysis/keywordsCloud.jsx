@@ -4,9 +4,10 @@ import { useState,useEffect,useRef,useMemo } from "react"
 import { viga } from "@/fonts";
 import { ThreeDot } from "react-loading-indicators"
 import { Slider } from "@/components/ui/slider"
-import KeywordsCloudDisplay from "./KeywordsCloudDisplay";
 import { WordCloudComponent } from "./WordCloudComponent";
 import { debounce } from "lodash";
+import { faCaretRight,faCaretLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
 export default function KeywordsCloud() {
@@ -14,10 +15,8 @@ export default function KeywordsCloud() {
     const [tagsSorted,setTagsSorted] = useState(null)
     const [tagsLoading,setTagsLoading] = useState(true)
     const [value, setValue] = useState([1])
-    const debouncedSetValue = useMemo(
-            () => debounce(setValue, 100),
-            []
-            );
+    const debouncedSetValue = useMemo(() => debounce(setValue, 300),[]);
+    const [pageNumber,setPageNumber] = useState(1)
 
    
     const ThreeDotColor = '#13452D'
@@ -96,8 +95,38 @@ export default function KeywordsCloud() {
                         step={1}
                     />
                </div>
+               {/* Pagination */}
+               <div className="flex flex-row gap-1 items-center">
+                  <button
+                    onClick={() => setPageNumber(pageNumber - 1)}
+                    disabled={pageNumber === 1}
+                    className={`p-2 rounded-full transition duration-200
+                        ${pageNumber === 1 ? 'opacity-50' : 'hover:bg-green1/20 active:scale-90'}
+                    `}
+                    >
+                    <FontAwesomeIcon
+                        icon={faCaretLeft}
+                        className={`text-[25px] transition 
+                        ${pageNumber === 1 ? 'text-gray-400' : 'text-green1'}
+                        `}
+                    />
+                  </button>
+
+                  <p className={`${viga.className} text-green1`}>Page Number</p>
+                  <p className={`text-green1 text-[20px] ${viga.className}`}>{pageNumber}</p>
+
+                  <button
+                    onClick={() => setPageNumber(pageNumber + 1)}
+                    className="p-2 rounded-full transition duration-200 hover:bg-green1/20 active:scale-90"
+                    >
+                    <FontAwesomeIcon
+                        icon={faCaretRight}
+                        className="text-[25px] transition  text-green1"
+                    />
+                  </button>
+               </div>
                 {
-                    tagsSorted && <WordCloudComponent words={tagsSorted.map(({ tag, count }) => ({ text: tag, value: count }))} />
+                    tagsSorted && <WordCloudComponent words={tagsSorted.map(({ tag, count }) => ({ text: tag, value: count }))} pageNumber={pageNumber} />
                 }
                
         </div>

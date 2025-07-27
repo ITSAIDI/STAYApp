@@ -7,9 +7,9 @@ const MAX_FONT_WEIGHT = 700;
 const MIN_FONT_WEIGHT = 400;
 const MAX_WORDS = 20;
 
-export function WordCloudComponent({ words })
+export function WordCloudComponent({ words,pageNumber })
 {
-  const sortedWords = useMemo(() => words.slice(0, MAX_WORDS),[words])
+  const sortedWords = useMemo(() => words.slice((pageNumber-1)*MAX_WORDS, pageNumber*MAX_WORDS),[words])
 
     const [minOccurences, maxOccurences] = useMemo(() => {
     const min = Math.min(...sortedWords.map((w) => w.value));
@@ -41,10 +41,10 @@ export function WordCloudComponent({ words })
         );
 
   return (
-    <div className="w-[500px] h-[500px]">
+    <div className="w-[400px] h-[400px]">
       <WordCloud
-        width={1000}
-        height={1000}
+        width={800}
+        height={800}
         font={"Poppins"}
         fontWeight={(word) => calculateFontWeight(word.value)}
         data={sortedWords}
