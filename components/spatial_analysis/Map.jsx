@@ -24,7 +24,7 @@ const customIcon = new L.Icon({
 });
 
 // Component to add markers to the map manually with clustering
-function MarkerCluster({ entities }) {
+function MarkerCluster({ entities, maxCount, setMaxCount }) {
   const map = useMap();
 
   useEffect(() => {
@@ -33,8 +33,10 @@ function MarkerCluster({ entities }) {
       zoomToBoundsOnClick: false,
       iconCreateFunction: (cluster) => {
         const count = cluster.getChildCount();
+
+        setMaxCount(prevMax => Math.max(prevMax, count));
+
         const size = 40;
-        let maxCount = 22;
         const normalized = Math.min(count / maxCount, 1);
         const hue = 120 - normalized * 120;
         const color = `hsl(${hue}, 80%, 45%)`;
@@ -74,6 +76,12 @@ function MarkerCluster({ entities }) {
 
     map.addLayer(clusterGroup);
 
+    // Reset maxCount when zoom or move ends because clusters change
+    const resetMaxCount = () => setMaxCount(1);
+
+    map.on('zoomend', resetMaxCount);
+    //map.on('moveend', resetMaxCount);
+
     // Zoom into cluster
     clusterGroup.on('clusterclick', function (e) {
       const cluster = e.propagatedFrom;
@@ -104,8 +112,10 @@ function MarkerCluster({ entities }) {
 
     return () => {
       map.removeLayer(clusterGroup);
+      map.off('zoomend', resetMaxCount);
+      map.off('moveend', resetMaxCount);
     };
-  }, [entities, map]);
+  }, [entities, map, maxCount, setMaxCount]);
 
   return null;
 }
@@ -118,6 +128,8 @@ export default function MapComponent({ entities }) {
   const [videosLoading, setVideosLoading] = useState(true);
   const ThreeDotColor = '#13452D'
   const [showTagsPopup,setshowTagsPopup] = useState(true)
+  const [maxCount, setMaxCount] = useState(64); // initial default value
+
 
 
   async function getEntityVideos() 
@@ -200,9 +212,11 @@ export default function MapComponent({ entities }) {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
           <MarkerCluster
-            entities={entities}
-            onMarkerClick={(entity) => setSelectedEntity(entity)}
-          />
+          entities={entities}
+          maxCount={maxCount}
+          setMaxCount={setMaxCount}
+          onMarkerClick={(entity) => setSelectedEntity(entity)}
+        />
 
         </MapContainer>
 
