@@ -20,7 +20,8 @@ export default function TagsPopup({entitiesIds,setshow}) {
         results.forEach(element => {
             if (Array.isArray(element.tags)) {
             element.tags.forEach(tag => {
-                tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                const cleanedTag = tag.toLowerCase().trim();
+                tagCounts[cleanedTag] = (tagCounts[cleanedTag] || 0) + 1;
             });
             }
         });
@@ -61,7 +62,7 @@ export default function TagsPopup({entitiesIds,setshow}) {
 
   useEffect(()=>{getVideosTags();},[entitiesIds])
 
-  //console.log('Tags sorted  :',tagsSorted)
+  console.log('Tags sorted  :',tagsSorted)
 
   return (
     <div className='absolute bottom-20 left-2  shadow-lg transform transition-transform duration-300 ease-in-out z-[1000] max-h-[200px] h-fit w-[400px] xl:w-[500px]

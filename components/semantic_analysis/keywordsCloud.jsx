@@ -6,18 +6,16 @@ import { ThreeDot } from "react-loading-indicators"
 import { Slider } from "@/components/ui/slider"
 import { WordCloudComponent } from "./WordCloudComponent";
 import { debounce } from "lodash";
-import { faCaretRight,faCaretLeft } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
 export default function KeywordsCloud() {
     let tagsInit = useRef(null)
     const [tagsSorted,setTagsSorted] = useState(null)
     const [tagsLoading,setTagsLoading] = useState(true)
-    const [value, setValue] = useState([1])
-    const debouncedSetValue = useMemo(() => debounce(setValue, 300),[]);
-    const [pageNumber,setPageNumber] = useState(1)
-
+    const [maxValue, setMaxValue] = useState([1])
+    const [minValue, setMinValue] = useState([1])
+    const debouncedSetMax = useMemo(() => debounce(setMaxValue, 300),[]);
+    const debouncedSetMin = useMemo(() => debounce(setMinValue, 300),[]);
    
     const ThreeDotColor = '#13452D'
 
@@ -52,7 +50,7 @@ export default function KeywordsCloud() {
         if(data) 
             {
                 tagsInit.current = getTags(data)
-                setValue([tagsInit.current?.[0]?.count || 1])
+                setMaxValue([tagsInit.current?.[0]?.count || 1])
                 setTagsLoading(false)
             }
         
@@ -66,10 +64,10 @@ export default function KeywordsCloud() {
     useEffect(()=>{getVideosTags();},[])
     useEffect(() => {
     if (tagsInit.current) {
-            const filtered = tagsInit.current.filter(tag => tag.count <= value[0])
+            const filtered = tagsInit.current.filter(tag => tag.count >= minValue[0] && tag.count <= maxValue[0])
             setTagsSorted(filtered)
         }
-        }, [value])
+        }, [maxValue,minValue])
 
 
     //console.log('tagsInit.current  ',tagsInit.current)
@@ -86,47 +84,28 @@ export default function KeywordsCloud() {
         ):
         <div className="bg-white rounded-sm flex flex-col p-2">
               <div className="flex flex-col gap-2 items-start w-64 mb-2">
-                   <p className={`${viga.className} text-green1`}>Max Frequency: {value[0]}</p>
+                   <p className={`${viga.className} text-green1`}>Max Frequency: {maxValue[0]}</p>
                     <Slider
-                        value={value}
-                        onValueChange={debouncedSetValue}
+                        value={maxValue}
+                        onValueChange={debouncedSetMax}
                         min={1}
                         max={tagsInit.current?.[0]?.count || 1}
                         step={1}
                     />
                </div>
-               {/* Pagination */}
-               <div className="flex flex-row gap-1 items-center">
-                  <button
-                    onClick={() => setPageNumber(pageNumber - 1)}
-                    disabled={pageNumber === 1}
-                    className={`p-2 rounded-full transition duration-200
-                        ${pageNumber === 1 ? 'opacity-50' : 'hover:bg-green1/20 active:scale-90'}
-                    `}
-                    >
-                    <FontAwesomeIcon
-                        icon={faCaretLeft}
-                        className={`text-[25px] transition 
-                        ${pageNumber === 1 ? 'text-gray-400' : 'text-green1'}
-                        `}
-                    />
-                  </button>
 
-                  <p className={`${viga.className} text-green1`}>Page Number</p>
-                  <p className={`text-green1 text-[20px] ${viga.className}`}>{pageNumber}</p>
-
-                  <button
-                    onClick={() => setPageNumber(pageNumber + 1)}
-                    className="p-2 rounded-full transition duration-200 hover:bg-green1/20 active:scale-90"
-                    >
-                    <FontAwesomeIcon
-                        icon={faCaretRight}
-                        className="text-[25px] transition  text-green1"
+                <div className="flex flex-col gap-2 items-start w-64 mb-2">
+                   <p className={`${viga.className} text-green1`}>Min Frequency: {minValue[0]}</p>
+                    <Slider
+                        value={minValue}
+                        onValueChange={debouncedSetMin}
+                        min={1}
+                        max={tagsInit.current?.[0]?.count || 1}
+                        step={1}
                     />
-                  </button>
                </div>
                 {
-                    tagsSorted && <WordCloudComponent words={tagsSorted.map(({ tag, count }) => ({ text: tag, value: count }))} pageNumber={pageNumber} />
+                    tagsSorted && <WordCloudComponent words={tagsSorted.map(({ tag, count }) => ({ text: tag, value: count }))}/>
                 }
                
         </div>
