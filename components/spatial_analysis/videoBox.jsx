@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faYoutube } from '@fortawesome/free-brands-svg-icons'
-import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { viga } from '@/fonts'
 import Image from 'next/image'
 

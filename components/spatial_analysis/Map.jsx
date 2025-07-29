@@ -130,6 +130,36 @@ export default function MapComponent({ entities }) {
   const [showTagsPopup,setshowTagsPopup] = useState(true)
   const [maxCount, setMaxCount] = useState(64); // initial default value
 
+  const [percentages, setPercentages] = useState({ small: 0, medium: 0, large: 0 });
+
+  function getPercentages() {
+    const counts = { small: 0, medium: 0, large: 0 };
+
+    if (entityVideos && entityVideos.length > 0) {
+      entityVideos.forEach(video => {
+        const n = video.nombre_abonnes_total;
+        if (n <= 600) {
+          counts.small += 1;
+        } else if (n >= 13000) {
+          counts.large += 1;
+        } else {
+          counts.medium += 1;
+        }
+      });
+    }
+
+    const total = counts.small + counts.medium + counts.large;
+
+    const percentages = total > 0
+      ? {
+          small: (counts.small / total) * 100,
+          medium: (counts.medium / total) * 100,
+          large: (counts.large / total) * 100,
+        }
+      : { small: 0, medium: 0, large: 0 };
+
+    return percentages;
+  }
 
 
   async function getEntityVideos() 
@@ -180,6 +210,11 @@ export default function MapComponent({ entities }) {
   }, [selectedEntity]);
 
   useEffect(() => {
+   setPercentages(getPercentages());
+  }, [entityVideos]);
+
+
+  useEffect(() => {
     const handleClusterHover = (e) => {
       if (e.detail) {
         setHoveredEntities(e.detail);
@@ -196,6 +231,7 @@ export default function MapComponent({ entities }) {
 
 
   //console.log('HoveredEntities',hoveredEntities)
+  //console.log('percentages',percentages)
 
   return (
     <div className="relative h-screen w-full">
@@ -248,6 +284,7 @@ export default function MapComponent({ entities }) {
               </button>
             </div>
 
+            {/* Flags */}
             <div className='flex flex-wrap gap-1 p-2'>
                 <div className='flex flex-row gap-2 items-center'>
                     <div className='rounded-sm bg-[#FF6464] w-[30px] h-[20px]'></div>
@@ -263,6 +300,59 @@ export default function MapComponent({ entities }) {
                 </div>
             </div>
 
+            <div className={`relative p-2 ${viga.className} mt-2`}>
+              {/* Labels above segments */}
+              <div className="absolute -top-3 flex w-full text-sm font-medium">
+                {percentages.small > 0 && (
+                  <div
+                    className="text-green3 text-center"
+                    style={{ width: `${percentages.small}%` }}
+                  >
+                    {Math.round(percentages.small)}%
+                  </div>
+                )}
+                {percentages.medium > 0 && (
+                  <div
+                    className="text-blue text-center"
+                    style={{ width: `${percentages.medium}%` }}
+                  >
+                    {Math.round(percentages.medium)}%
+                  </div>
+                )}
+                {percentages.large > 0 && (
+                  <div
+                    className="text-red text-center"
+                    style={{ width: `${percentages.large}%` }}
+                  >
+                    {Math.round(percentages.large)}%
+                  </div>
+                )}
+              </div>
+
+              {/* Colored bar */}
+              <div className="flex h-3 rounded-full overflow-hidden border border-gray-300">
+                {percentages.small > 0 && (
+                  <div
+                    className="bg-green3 h-full"
+                    style={{ width: `${percentages.small}%` }}
+                  />
+                )}
+                {percentages.medium > 0 && (
+                  <div
+                    className="bg-blue h-full"
+                    style={{ width: `${percentages.medium}%` }}
+                  />
+                )}
+                {percentages.large > 0 && (
+                  <div
+                    className="bg-red h-full"
+                    style={{ width: `${percentages.large}%` }}
+                  />
+                )}
+              </div>
+            </div>
+
+
             {/* Scrollable video list */}
             <div className="flex flex-col gap-2 overflow-y-auto px-2 pb-4 scrollbar scrollbar-thumb-green1 scrollbar-track-white overflow-x-hidden">
               {videosLoading ? (
@@ -271,7 +361,7 @@ export default function MapComponent({ entities }) {
               </div>
             
                 ):
-                  entityVideos.map((video,index)=>
+                  entityVideos.map((video,_)=>
                     <VideoBox
                     key={video.id_video}
                   videoInfos={video} />
