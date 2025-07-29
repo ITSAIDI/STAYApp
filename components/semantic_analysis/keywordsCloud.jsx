@@ -64,6 +64,7 @@ export default function KeywordsCloud() {
     useEffect(()=>{getVideosTags();},[])
     useEffect(() => {
     if (tagsInit.current) {
+
             const filtered = tagsInit.current.filter(tag => tag.count >= minValue[0] && tag.count <= maxValue[0])
             setTagsSorted(filtered)
         }
