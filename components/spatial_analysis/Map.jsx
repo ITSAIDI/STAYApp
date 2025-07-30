@@ -12,6 +12,7 @@ import VideoBox from './videoBox';
 import { viga } from '@/fonts';
 import { ThreeDot } from "react-loading-indicators"
 import TagsPopup from './tagsPopup';
+import { count } from 'd3';
 
 
 
@@ -131,6 +132,7 @@ export default function MapComponent({ entities }) {
   const [maxCount, setMaxCount] = useState(64); // initial default value
 
   const [percentages, setPercentages] = useState({ small: 0, medium: 0, large: 0 });
+  const [counts, setCounts] = useState({ small: 0, medium: 0, large: 0 });
 
   function getPercentages() {
     const counts = { small: 0, medium: 0, large: 0 };
@@ -148,6 +150,7 @@ export default function MapComponent({ entities }) {
       });
     }
 
+    setCounts(counts)
     const total = counts.small + counts.medium + counts.large;
 
     const percentages = total > 0
@@ -306,25 +309,25 @@ export default function MapComponent({ entities }) {
                 {percentages.small > 0 && (
                   <div
                     className="text-green3 text-center"
-                    style={{ width: `${percentages.small}%` }}
+                    style={{ width: `${percentages.small}%`,minWidth: '40px' }}
                   >
-                    {Math.round(percentages.small)}%
+                    {Math.round(percentages.small)}% ({counts.small})
                   </div>
                 )}
                 {percentages.medium > 0 && (
                   <div
                     className="text-blue text-center"
-                    style={{ width: `${percentages.medium}%` }}
+                    style={{ width: `${percentages.medium}%`,minWidth: '40px'  }}
                   >
-                    {Math.round(percentages.medium)}%
+                    {Math.round(percentages.medium)}% ({counts.medium})
                   </div>
                 )}
                 {percentages.large > 0 && (
                   <div
                     className="text-red text-center"
-                    style={{ width: `${percentages.large}%` }}
+                    style={{ width: `${percentages.large}%`,minWidth: '40px' }}
                   >
-                    {Math.round(percentages.large)}%
+                    {Math.round(percentages.large)}% ({counts.large})
                   </div>
                 )}
               </div>

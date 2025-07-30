@@ -62,7 +62,7 @@ export default function TagsPopup({entitiesIds,setshow}) {
 
   useEffect(()=>{getVideosTags();},[entitiesIds])
 
-  console.log('Tags sorted  :',tagsSorted)
+  //console.log('Tags sorted  :',tagsSorted)
 
   return (
     <div className='absolute bottom-20 left-2  shadow-lg transform transition-transform duration-300 ease-in-out z-[1000] max-h-[200px] h-fit w-[400px] xl:w-[500px]
@@ -96,7 +96,7 @@ export default function TagsPopup({entitiesIds,setshow}) {
                         index < 5 ? 'bg-green3' : 'bg-gray-100'
                         }`}
                     >
-                        <span>{item.tag}</span>
+                        <span>{item.tag} ({item.count})</span>
 
                     </div>
                     ))}

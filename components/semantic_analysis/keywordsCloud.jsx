@@ -1,11 +1,10 @@
 'use client'
 
 import { useState,useEffect,useRef,useMemo } from "react"
-import { viga } from "@/fonts";
 import { ThreeDot } from "react-loading-indicators"
-import { Slider } from "@/components/ui/slider"
 import { WordCloudComponent } from "./WordCloudComponent";
 import { debounce } from "lodash";
+import { viga } from "@/fonts";
 
 
 export default function KeywordsCloud() {
@@ -72,10 +71,13 @@ export default function KeywordsCloud() {
 
 
     //console.log('tagsInit.current  ',tagsInit.current)
-    console.log('tagsSorted  ',tagsSorted)
+    //console.log('tagsSorted  ',tagsSorted)
 
   return (
     <div className="p-2">
+        {/* Title */}
+        <h1 className = {`${viga.className} text-xl text-green1`}>Keywords Cloud</h1>
+
          {tagsLoading ? 
          (
            <div className="flex items-center justify-center h-full w-full">
@@ -83,31 +85,17 @@ export default function KeywordsCloud() {
            </div>
          
         ):
-        <div className="bg-white rounded-sm flex flex-col p-2">
-              <div className="flex flex-col gap-2 items-start w-64 mb-2">
-                   <p className={`${viga.className} text-green1`}>Max Frequency: {maxValue[0]}</p>
-                    <Slider
-                        value={maxValue}
-                        onValueChange={debouncedSetMax}
-                        min={1}
-                        max={tagsInit.current?.[0]?.count || 1}
-                        step={1}
+        <div className="w-full h-full">
+            {
+                tagsSorted && <WordCloudComponent
+                    tagsInit={tagsInit}
+                    minValue={minValue} 
+                    maxValue={maxValue} 
+                    debouncedSetMax={debouncedSetMax} 
+                    debouncedSetMin={debouncedSetMin} 
+                    words={tagsSorted.map(({ tag, count }) => ({ text: tag, value: count }))}
                     />
-               </div>
-
-                <div className="flex flex-col gap-2 items-start w-64 mb-2">
-                   <p className={`${viga.className} text-green1`}>Min Frequency: {minValue[0]}</p>
-                    <Slider
-                        value={minValue}
-                        onValueChange={debouncedSetMin}
-                        min={1}
-                        max={tagsInit.current?.[0]?.count || 1}
-                        step={1}
-                    />
-               </div>
-                {
-                    tagsSorted && <WordCloudComponent words={tagsSorted.map(({ tag, count }) => ({ text: tag, value: count }))}/>
-                }
+            }
                
         </div>
         }

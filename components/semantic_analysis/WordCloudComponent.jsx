@@ -1,9 +1,9 @@
 import { viga } from "@/fonts";
-import { faCirclePlus, faCircleXmark, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faCirclePlus, faTrash,faRotateLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {useCallback, useMemo, useState,useEffect ,useRef} from "react";
 import WordCloud from "react-d3-cloud";
-
+import { Slider } from "@/components/ui/slider"
 
 const MAX_FONT_SIZE = 100;
 const MIN_FONT_SIZE = 30;
@@ -11,7 +11,7 @@ const MAX_FONT_WEIGHT = 700;
 const MIN_FONT_WEIGHT = 400;
 //const MAX_WORDS = 20;
 
-export function WordCloudComponent({ words })
+export function WordCloudComponent({ words,tagsInit,maxValue,debouncedSetMax,minValue,debouncedSetMin })
 {
 
     const categorizedWords = useMemo(() => {
@@ -195,89 +195,121 @@ export function WordCloudComponent({ words })
         );
 
     //console.log('hoveredTag  :',hoveredTag)
-   console.log('sortedWords   :',sortedWords)
+   //console.log('sortedWords   :',sortedWords)
    
   return (
-  <div className="relative w-[400px] h-[600px] mt-2 ">
+  <div className="relative mt-2 flex flex-row w-full items-center">
 
-    {/* Search bar */}
-     <div className={`${viga.className} relative w-full max-w-md mx-auto text-green1`}>
-      <input
-        type="text"
-        value={query}
-        onChange={handleChange}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        className="w-full p-2 border border-gray-300 rounded-full"
-        placeholder="Search a keyword..."
-        autoComplete="off"
-      />
-      {suggestions.length > 0 && (
-        <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-sm mt-1 max-h-60 overflow-auto">
-          {suggestions.map(({ text, value }, index) => (
-            <li
-              key={index}
-              onClick={() => handleSelect({ text, value })}
-              className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between"
-            >
-              <span>{text}</span>
-              <span className="text-gray-400 text-sm">({value})</span>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-      
-    <div className="flex flex-row gap-2 items-center mt-2">
+    <div className="flex flex-col gap-1 w-[40%] items-start mr-2">
 
-      <button
-       onClick={()=>{handleRemove();}}
-       disabled = {removeDisabled}
-      >
-        <FontAwesomeIcon 
-        className={`text-[20px] transition-all duration-300 ${
-          removeDisabled
-            ? 'text-gray-300' 
-            : 'text-red-400 hover:text-red-500 active:scale-85'
-        }`}
-         icon={faTrash}/>
-      </button>
+      {/* Sliders */}
+      <div className="flex flex-col gap-2 items-start w-full mb-2">
+          <p className={`${viga.className} text-green1`}>Max Frequency: {maxValue[0]}</p>
+          <Slider
+              value={maxValue}
+              onValueChange={debouncedSetMax}
+              min={1}
+              max={tagsInit.current?.[0]?.count || 1}
+              step={1}
+          />
+      </div>
 
-      <button
-       onClick={()=>{handleCancel();}}
-       disabled= {cancelDisabled}
-      >
-        <FontAwesomeIcon
-          icon={faCircleXmark}
-          className={`text-[20px] transition-all duration-300 ${
-            cancelDisabled
-              ? 'text-gray-300'
-              : 'text-gray-400 hover:text-gray-500 active:scale-85'
-          }`}
+      <div className="flex flex-col gap-2 items-start w-full mb-2">
+          <p className={`${viga.className} text-green1`}>Min Frequency: {minValue[0]}</p>
+          <Slider
+              value={minValue}
+              onValueChange={debouncedSetMin}
+              min={1}
+              max={tagsInit.current?.[0]?.count || 1}
+              step={1}
+          />
+      </div>
+
+      {/* Search bar */}
+      <div className={`${viga.className} relative w-full max-w-md mx-auto text-green1`}>
+        <input
+          type="text"
+          value={query}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          className="w-full p-2 border border-gray-300 rounded-full"
+          placeholder="Search a keyword..."
+          autoComplete="off"
         />
-      </button>
+        {suggestions.length > 0 && (
+          <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-sm mt-1 max-h-60 overflow-auto">
+            {suggestions.map(({ text, value }, index) => (
+              <li
+                key={index}
+                onClick={() => handleSelect({ text, value })}
+                className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between"
+              >
+                <span>{text}</span>
+                <span className="text-gray-400 text-sm">({value})</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
-      <button
-       onClick={()=>{handleAdd();}}
-      disabled= {addDisabled}
-      >
-        
+   
+          
+      {/* Add, Remove, Cancel buttons */}
+      <div className="flex flex-row gap-2 items-center mt-2">
+
+        <button
+        onClick={()=>{handleRemove();}}
+        disabled = {removeDisabled}
+        >
+          <FontAwesomeIcon 
+          className={`text-[20px] transition-all duration-300 ${
+            removeDisabled
+              ? 'text-gray-300' 
+              : 'text-red-400 hover:text-red-500 active:scale-85'
+          }`}
+          icon={faTrash}/>
+        </button>
+
+        <button
+        onClick={()=>{handleCancel();}}
+        disabled= {cancelDisabled}
+        >
           <FontAwesomeIcon
-            icon={faCirclePlus}
+            icon={faRotateLeft}
             className={`text-[20px] transition-all duration-300 ${
-              addDisabled
+              cancelDisabled
                 ? 'text-gray-300'
-                : 'text-green-400 hover:text-green-500 active:scale-85'
+                : 'text-gray-400 hover:text-gray-500 active:scale-85'
             }`}
           />
-      </button>
+        </button>
 
-      <h1 className={`${viga.className} text-green1`}>{selected?.text}</h1>
+        <button
+        onClick={()=>{handleAdd();}}
+        disabled= {addDisabled}
+        >
+          
+            <FontAwesomeIcon
+              icon={faCirclePlus}
+              className={`text-[20px] transition-all duration-300 ${
+                addDisabled
+                  ? 'text-gray-300'
+                  : 'text-green-400 hover:text-green-500 active:scale-85'
+              }`}
+            />
+        </button>
+
+        <h1 className={`${viga.className} text-green1`}>{selected?.text}</h1>
+      </div>
+
     </div>
 
+    {/* Cloud */}
+    <div className="min-w-[600px] min-h-[200px] h-fit w-[60%]">
       <WordCloud
-        width={800}
-        height={800}
+        width={900}
+        height={500}
         font="Poppins"
         fontWeight={(word) => calculateFontWeight(word.value)}
         data={sortedWords}
@@ -302,16 +334,15 @@ export function WordCloudComponent({ words })
           setSelected(d);
       }}
       />
-
+    </div>
 
     {/* Hover function */}
-
     {hoveredTag && (
       <div
         className={`flex flex-col absolute bg-green3 text-green1 px-2 py-1 rounded shadow ${viga.className} whitespace-nowrap`}
         style={{
-          top: hoveredTag.y - 100, // shift up to align better with word
-          left: hoveredTag.x - 200,
+          top: hoveredTag.y - 50, // shift up to align better with word
+          left: hoveredTag.x-500,
           pointerEvents: "none", // avoid interfering with mouse events
           zIndex: 50,
         }}
