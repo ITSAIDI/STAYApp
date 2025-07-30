@@ -226,19 +226,19 @@ export function WordCloudComponent({ words,tagsInit,maxValue,debouncedSetMax,min
       </div>
 
       {/* Search bar */}
-      <div className={`${viga.className} relative w-full max-w-md mx-auto text-green1`}>
+      <div className={`${viga.className} relative w-full  text-green1`}>
         <input
           type="text"
           value={query}
           onChange={handleChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          className="w-full p-2 border border-gray-300 rounded-full"
+          className="w-full p-2 border-2 border-gray-300 rounded-full"
           placeholder="Search a keyword..."
           autoComplete="off"
         />
         {suggestions.length > 0 && (
-          <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-sm mt-1 max-h-60 overflow-auto">
+          <ul className="absolute z-10 w-full bg-white border-2 border-gray-300 rounded-sm mt-1 max-h-60 overflow-auto">
             {suggestions.map(({ text, value }, index) => (
               <li
                 key={index}

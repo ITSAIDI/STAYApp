@@ -1,6 +1,8 @@
 'use client'
 
 import { viga } from "@/fonts"
+import { faCircleXmark } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useEffect,useState,useRef } from "react"
 
 
@@ -28,13 +30,20 @@ export default function KeywordsTimeline() {
       if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
 
       debounceTimeout.current = setTimeout(() => {
-        if (value.trim() === '') {
-          if (inputFocused) {
-            setSuggestions(getRandomWords(tagsInit.current, 10));
-          } else {
-            setSuggestions([]);
-          }
-        } else {
+        if (value.trim() === '') 
+          {
+            if (inputFocused) 
+            {
+              setSuggestions(getRandomWords(tagsInit.current, 10));
+            } 
+            else 
+            {
+              setSuggestions([]);
+            }
+          } 
+
+        else 
+        {
           const filtered = tagsInit.current
             .filter(({ text }) => text.toLowerCase().startsWith(value.toLowerCase()))
             .sort((a, b) => b.value - a.value);
@@ -55,10 +64,11 @@ export default function KeywordsTimeline() {
       setTimeout(() => {
         setInputFocused(false);
         setSuggestions([]);
-      }, 100);
+      }, 400);
     };
 
     const handleSelect = (word) => {
+
     setQuery(word.text);
     setSelectedTags((prev) => {
         if (prev.includes(word.text)) return prev;
@@ -92,6 +102,10 @@ export default function KeywordsTimeline() {
     const shuffled = [...list].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, count);
     }
+    function removeTag(tag)
+    {
+      setSelectedTags((prev) => prev.filter((t) => t !== tag));
+    }
 
     async function getVideosTags() 
     {
@@ -115,40 +129,66 @@ export default function KeywordsTimeline() {
     
     useEffect(()=>{getVideosTags();},[])
 
-
-
-  console.log('tags fro timeles : ',tagsInit.current);
-  console.log('selectedTags : ',selectedTags); 
-
   return (
-    <div>
-        {/* Search bar */}
-        <div className={`${viga.className} relative w-full max-w-md mx-auto text-green1`}>
-            <input
-            type="text"
-            value={query}
-            onChange={handleChange}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            className="w-full p-2 border border-gray-300 rounded-full"
-            placeholder="Search a keyword..."
-            autoComplete="off"
-            />
-            {suggestions.length > 0 && (
-            <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-sm mt-1 max-h-60 overflow-auto">
-                {suggestions.map(({ text, value }, index) => (
-                <li
-                    key={index}
-                    onClick={() => handleSelect({ text, value })}
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between"
-                >
-                    <span>{text}</span>
-                    <span className="text-gray-400 text-sm">({value})</span>
-                </li>
-                ))}
-            </ul>
-            )}
+    <div className="flex flex-col">
+        {/* Title */}
+        <h1 className = {`${viga.className} text-xl text-green1`}>Keywords Timelines</h1>
+
+        <div className="flex flex-row gap-1">
+
+          {/* Search bar */}
+          <div className={`${viga.className} relative text-green1 w-[40%]`}>
+              <input
+              type="text"
+              value={query}
+              onChange={handleChange}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              className="w-full p-2 border-2 border-gray-300 rounded-full"
+              placeholder="Search a keyword..."
+              autoComplete="off"
+              />
+              {suggestions.length > 0 && (
+              <ul className="absolute z-10 w-full bg-white border-2 border-gray-300 rounded-sm mt-1 max-h-60 overflow-auto">
+                  {suggestions.map(({ text, value }, index) => (
+                  <li
+                      key={index}
+                      onClick={() => handleSelect({ text, value })}
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between"
+                  >
+                      <span>{text}</span>
+                      <span className="text-gray-400 text-sm">({value})</span>
+                  </li>
+                  ))}
+              </ul>
+              )}
+          </div>
+
+          {/* Selected tags */}
+          <div className="flex flex-wrap rounded-sm border-2 border-gray-300 w-full">
+            {
+              selectedTags && (
+                selectedTags.map((tag,index)=>
+                <div         
+                  key={index}
+                  className= {`text-green1 bg-green3 px-2 py-1 rounded-full ${viga.className} m-1 flex flex-row gap-1 items-center`}>
+                  <h1>{tag}</h1>
+                  <button
+                    onClick={()=>{removeTag(tag);}}>
+                    <FontAwesomeIcon 
+                      icon={faCircleXmark} 
+                      className="transition-all duration-300 opacity-70 hover:opacity-100 active:scale-85" />
+                  </button>
+                </div>
+       
+                )
+              )
+            }
+          </div>
+
         </div>
+
+
     </div>
   )
 }
