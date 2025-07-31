@@ -176,7 +176,9 @@ export default function MapComponent({ entities }) {
       })
       const data = await res.json()
 
-      //console.log('entityVideos  ',data)
+      console.log('selectedEntity  ',selectedEntity)
+
+      console.log('entityVideos  ',data)
 
       setEntityVideos(data)
       

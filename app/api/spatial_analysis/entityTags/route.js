@@ -15,7 +15,7 @@ export async function POST(request) {
   try {
     const body = await request.json()
 
-    console.log('received body  :',body)
+    //console.log('received body  :',body)
 
     const entities = body.entitiesIds
 

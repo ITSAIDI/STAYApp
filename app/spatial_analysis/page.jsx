@@ -1,10 +1,8 @@
 'use client';
 
-import Tooltip from '@/components/tooltip';
-import { viga,poppins } from '@/fonts';
+import { viga } from '@/fonts';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { vi } from 'date-fns/locale';
 import dynamic from 'next/dynamic';
 import { useEffect,useState } from 'react';
 

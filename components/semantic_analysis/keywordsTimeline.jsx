@@ -6,10 +6,25 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useEffect,useState,useRef } from "react"
 
 
+import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle, CardDescription
+} from "@/components/ui/card"
+
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart"
+
+
 export default function KeywordsTimeline() {
 
     let tagsInit = useRef(null)
-    const [selectedTags,setSelectedTags] = useState([])
+    const [selectedTags,setSelectedTags] = useState(['autosuffisance'])
     const [displayedData,setDisplayedData] = useState(null)
     const [tagsLoading,setTagsLoading] = useState(true)
 
@@ -19,9 +34,26 @@ export default function KeywordsTimeline() {
     const debounceTimeout = useRef(null);
 
 
+    const [chartConfig,setChartConfig] = useState([])
+
     const ThreeDotColor = '#13452D'
 
-    
+    useEffect(() => {
+      if (selectedTags.length === 0) {
+        setChartConfig({});
+        return;
+      }
+
+      const config = {};
+      selectedTags.forEach((tag) => {
+        config[tag] = {
+          label: "Nomber of mentions of: "+tag,
+          color: hashStringToColor(tag),
+        };
+      });
+      setChartConfig(config);
+    }, [selectedTags]);
+
 
     const handleChange = (e) => {
       const value = e.target.value;
@@ -76,6 +108,17 @@ export default function KeywordsTimeline() {
     });
     };
 
+    // Same Color for a tag (persistent)
+    function hashStringToColor(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      const color = `#${((hash >> 24) & 0xff).toString(16).padStart(2, '0')}${
+        ((hash >> 16) & 0xff).toString(16).padStart(2, '0')
+      }${((hash >> 8) & 0xff).toString(16).padStart(2, '0')}`;
+      return color;
+    }
 
 
     function getTags(results) {
@@ -129,11 +172,15 @@ export default function KeywordsTimeline() {
     
     useEffect(()=>{getVideosTags();},[])
 
+    console.log('chartConfig :',chartConfig)
+
+    
   return (
     <div className="flex flex-col">
         {/* Title */}
         <h1 className = {`${viga.className} text-xl text-green1`}>Keywords Timelines</h1>
 
+        {/* Select tags */}
         <div className="flex flex-row gap-1">
 
           {/* Search bar */}
@@ -187,6 +234,18 @@ export default function KeywordsTimeline() {
           </div>
 
         </div>
+
+        {/* Timelines */}
+        <Card className='w-full h-full' >
+            <CardContent>
+              <ChartContainer config={chartConfig}>
+
+              </ChartContainer>
+
+            </CardContent>
+
+
+        </Card>
 
 
     </div>

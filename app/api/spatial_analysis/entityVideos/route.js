@@ -20,7 +20,7 @@ export async function POST(request) {
 
     const entityID  = body.id_entite_spatiale
 
-    console.log("entityID :",entityID)
+    //console.log("entityID :",entityID)
 
 
     const query = `SELECT * FROM getVideos_spatial_Entity($1, '2025-05-19')`
