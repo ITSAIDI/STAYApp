@@ -4,14 +4,12 @@ import { viga } from "@/fonts"
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useEffect,useState,useRef } from "react"
-
+import { ThreeDot } from "react-loading-indicators"
 
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 import {
   Card,
   CardContent,
-  CardHeader,
-  CardTitle, CardDescription
 } from "@/components/ui/card"
 
 import {
@@ -21,7 +19,7 @@ import {
 } from "@/components/ui/chart"
 
 
-export default function KeywordsTimeline() {
+export default function KeywordsTimeline({loading,setLoading}) {
 
     let tagsInit = useRef(null)
     const [selectedTags,setSelectedTags] = useState(['autosuffisance'])
@@ -32,6 +30,7 @@ export default function KeywordsTimeline() {
     const [inputFocused, setInputFocused] = useState(false);
     const debounceTimeout = useRef(null);
 
+    const ThreeDotColor = '#13452D'
 
     const [chartConfig,setChartConfig] = useState({})
 
@@ -231,12 +230,14 @@ export default function KeywordsTimeline() {
       }
 
       if (selectedTags.length > 0) {
+        setLoading(true);
         fetchAllKeywordTimelines();
+        setLoading(false);
       }
     }, [selectedTags]);
 
-    console.log('chartConfig :',chartConfig)
-    console.log('displayedData:', displayedData);
+    //console.log('chartConfig :',chartConfig)
+    //console.log('displayedData:', displayedData);
 
     
   return (
@@ -244,6 +245,14 @@ export default function KeywordsTimeline() {
       
         {/* Title */}
         <h1 className = {`${viga.className} text-xl text-green1`}>Keywords Timelines</h1>
+
+        {loading ? 
+         (
+           <div className="flex items-center justify-center h-full w-full">
+             <ThreeDot variant="brick-stack"  size="small" color={ThreeDotColor}/>
+           </div>
+         
+        ):
 
        <div className="flex flex-row gap-1 w-full items-center h-full">
 
@@ -357,6 +366,7 @@ export default function KeywordsTimeline() {
         </Card>
 
       </div>
+        }
 
     </div>
   )

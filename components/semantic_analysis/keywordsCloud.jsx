@@ -7,10 +7,9 @@ import { debounce } from "lodash";
 import { viga } from "@/fonts";
 
 
-export default function KeywordsCloud() {
+export default function KeywordsCloud({loading,setLoading}) {
     let tagsInit = useRef(null)
     const [tagsSorted,setTagsSorted] = useState(null)
-    const [tagsLoading,setTagsLoading] = useState(true)
     const [maxValue, setMaxValue] = useState([1])
     const [minValue, setMinValue] = useState([1])
     const debouncedSetMax = useMemo(() => debounce(setMaxValue, 300),[]);
@@ -41,7 +40,7 @@ export default function KeywordsCloud() {
 
     async function getVideosTags() 
     {
-        setTagsLoading(true)
+        setLoading(true)
         try 
         {
         const res = await fetch('/api/semantic_analysis/keywordsCloud')
@@ -50,7 +49,7 @@ export default function KeywordsCloud() {
             {
                 tagsInit.current = getTags(data)
                 setMaxValue([tagsInit.current?.[0]?.count || 1])
-                setTagsLoading(false)
+                setLoading(false)
             }
         
         } 
@@ -74,11 +73,11 @@ export default function KeywordsCloud() {
     //console.log('tagsSorted  ',tagsSorted)
 
   return (
-    <div className="bg-white p-2 rounded-sm">
+    <div className="bg-white p-2 rounded-sm h-full">
         {/* Title */}
         <h1 className = {`${viga.className} text-xl text-green1`}>Keywords Cloud</h1>
 
-         {tagsLoading ? 
+         {loading ? 
          (
            <div className="flex items-center justify-center h-full w-full">
              <ThreeDot variant="brick-stack"  size="small" color={ThreeDotColor}/>
