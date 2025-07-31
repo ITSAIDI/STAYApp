@@ -177,7 +177,7 @@ export default function MapComponent({ entities }) {
       })
       const data = await res.json()
 
-      console.log('selectedEntity  ',selectedEntity)
+      //console.log('selectedEntity  ',selectedEntity)
 
       //console.log('entityVideos  ',data)
 
@@ -236,7 +236,7 @@ export default function MapComponent({ entities }) {
   }, []);
 
 
-  console.log('HoveredEntities',hoveredEntities)
+  //console.log('HoveredEntities',hoveredEntities)
   //console.log('percentages',percentages)
 
   return (

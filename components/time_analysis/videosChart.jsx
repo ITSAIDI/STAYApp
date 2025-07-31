@@ -102,7 +102,7 @@ export default function VideosChart({chartInfos,categoryState,categoryFunction,e
 
   //console.log('chartData  : ',chartData)
   //console.log('chartDataCumul  : ',chartDataCumul)
-
+  console.log('data ',data)
 
   const chartConfig = {
   default: {

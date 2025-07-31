@@ -177,10 +177,11 @@ export default function KeywordsTimeline() {
     
   return (
     <div className="flex flex-col bg-white rounded-sm p-2">
+      
         {/* Title */}
         <h1 className = {`${viga.className} text-xl text-green1`}>Keywords Timelines</h1>
 
-        {/* Select tags */}
+        {/* Select tags and Search */}
         <div className="flex flex-row gap-1">
 
           {/* Search bar */}
@@ -239,6 +240,16 @@ export default function KeywordsTimeline() {
         <Card className='w-full h-full' >
             <CardContent>
               <ChartContainer config={chartConfig}>
+                <LineChart
+                data={data}
+                margin={{
+                  top: 20,
+                  left: 12,
+                  right: 12,
+                }}
+            >
+
+                </LineChart>
 
               </ChartContainer>
 
