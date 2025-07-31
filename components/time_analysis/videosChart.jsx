@@ -261,7 +261,7 @@ export default function VideosChart({chartInfos,categoryState,categoryFunction,e
               type="natural"
               stroke={chartConfig.default.color}
               strokeWidth={2}
-               dot={(props) => {
+              dot={(props) => {
                     const { cx, cy, payload, index } = props
                     const year = payload["publicationyear"] // x-axis key (e.g., "year")
 

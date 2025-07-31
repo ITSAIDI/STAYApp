@@ -25,8 +25,7 @@ export default function KeywordsTimeline() {
 
     let tagsInit = useRef(null)
     const [selectedTags,setSelectedTags] = useState(['autosuffisance'])
-    const [displayedData,setDisplayedData] = useState(null)
-    const [tagsLoading,setTagsLoading] = useState(true)
+    const [displayedData,setDisplayedData] = useState([])
 
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
@@ -34,25 +33,7 @@ export default function KeywordsTimeline() {
     const debounceTimeout = useRef(null);
 
 
-    const [chartConfig,setChartConfig] = useState([])
-
-    const ThreeDotColor = '#13452D'
-
-    useEffect(() => {
-      if (selectedTags.length === 0) {
-        setChartConfig({});
-        return;
-      }
-
-      const config = {};
-      selectedTags.forEach((tag) => {
-        config[tag] = {
-          label: "Nomber of mentions of: "+tag,
-          color: hashStringToColor(tag),
-        };
-      });
-      setChartConfig(config);
-    }, [selectedTags]);
+    const [chartConfig,setChartConfig] = useState({})
 
 
     const handleChange = (e) => {
@@ -120,7 +101,6 @@ export default function KeywordsTimeline() {
       return color;
     }
 
-
     function getTags(results) {
     const tagCounts = {};
 
@@ -152,7 +132,6 @@ export default function KeywordsTimeline() {
 
     async function getVideosTags() 
     {
-        setTagsLoading(true)
         try 
         {
         const res = await fetch('/api/semantic_analysis/keywordsCloud')
@@ -160,7 +139,6 @@ export default function KeywordsTimeline() {
         if(data) 
             {
                 tagsInit.current = getTags(data).map(({ tag, count }) => ({ text: tag, value: count }))
-                setTagsLoading(false)
             }
         
         } 
@@ -169,23 +147,133 @@ export default function KeywordsTimeline() {
         console.log('Failing while fetching videos tags ',error)
         }
     }
+
+    async function getKeywordTimeline(selectedTag) {
+      if(selectedTag)
+      {
+        try 
+        {
+          const response = await fetch('/api/semantic_analysis/keywordData',
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body : JSON.stringify({keyword : selectedTag})
+
+            }
+          );
+          const data = await response.json();
+          
+          return data;
+          
+        } 
+        catch (error) 
+        {
+          console.log('Failing while fetching keyword time data ',error)
+          
+        }
+      }
+    return null;
+    }
     
     useEffect(()=>{getVideosTags();},[])
+    
+    useEffect(() => {
+      if (selectedTags.length === 0) {
+        setChartConfig({});
+        return;
+      }
+
+      const config = {};
+      selectedTags.forEach((tag) => {
+        config[tag] = {
+          label: "Nomber of mentions of: "+tag,
+          color: hashStringToColor(tag),
+        };
+      });
+      setChartConfig(config);
+    }, [selectedTags]);
+    
+    useEffect(() => {
+      async function fetchAllKeywordTimelines() {
+        const allData = {}; // { "2010": { annee: "2010", autosuffisance: 1, ... }, ... }
+        const allYears = new Set();
+
+        for (const tag of selectedTags) {
+          const tagData = await getKeywordTimeline(tag);
+
+          if (!tagData) continue;
+
+          tagData.forEach(entry => {
+            const year = entry.annee;
+            const count = parseInt(entry.nombre_mentions);
+            allYears.add(year);
+
+            if (!allData[year]) {
+              allData[year] = { annee: year };
+            }
+
+            allData[year][tag] = count;
+          });
+        }
+
+        // Ajouter les années manquantes pour chaque tag avec valeur 0
+        const mergedData = Array.from(allYears)
+          .sort()
+          .map(year => {
+            const row = { annee: year };
+            selectedTags.forEach(tag => {
+              row[tag] = allData[year]?.[tag] ?? 0;
+            });
+            return row;
+          });
+
+        setDisplayedData(mergedData);
+      }
+
+      if (selectedTags.length > 0) {
+        fetchAllKeywordTimelines();
+      }
+    }, [selectedTags]);
 
     console.log('chartConfig :',chartConfig)
+    console.log('displayedData:', displayedData);
 
     
   return (
-    <div className="flex flex-col bg-white rounded-sm p-2">
+    <div className="flex flex-col bg-white rounded-sm p-2 gap-2 w-full h-full">
       
         {/* Title */}
         <h1 className = {`${viga.className} text-xl text-green1`}>Keywords Timelines</h1>
 
+       <div className="flex flex-row gap-1 w-full items-center h-full">
+
         {/* Select tags and Search */}
-        <div className="flex flex-row gap-1">
+        <div className="flex flex-col gap-1 w-[70%] h-full">
+
+          {/* Selected tags */}
+          <div className="flex flex-wrap rounded-sm border-2 border-gray-300 w-full">
+            {
+              selectedTags && (
+                selectedTags.map((tag,index)=>
+                <div         
+                  key={index}
+                  className= {`text-green1 bg-green3 px-2 py-1 rounded-full ${viga.className} m-1 flex flex-row gap-1 items-center`}>
+                  <h1>{tag}</h1>
+                  <button
+                    onClick={()=>{removeTag(tag);}}>
+                    <FontAwesomeIcon 
+                      icon={faCircleXmark} 
+                      className="transition-all duration-300 opacity-70 hover:opacity-100 active:scale-85" />
+                  </button>
+                </div>
+       
+                )
+              )
+            }
+          </div>
 
           {/* Search bar */}
-          <div className={`${viga.className} relative text-green1 w-[40%]`}>
+          <div className={`${viga.className} relative text-green1 w-full h-full`}>
               <input
               type="text"
               value={query}
@@ -212,28 +300,6 @@ export default function KeywordsTimeline() {
               )}
           </div>
 
-          {/* Selected tags */}
-          <div className="flex flex-wrap rounded-sm border-2 border-gray-300 w-full">
-            {
-              selectedTags && (
-                selectedTags.map((tag,index)=>
-                <div         
-                  key={index}
-                  className= {`text-green1 bg-green3 px-2 py-1 rounded-full ${viga.className} m-1 flex flex-row gap-1 items-center`}>
-                  <h1>{tag}</h1>
-                  <button
-                    onClick={()=>{removeTag(tag);}}>
-                    <FontAwesomeIcon 
-                      icon={faCircleXmark} 
-                      className="transition-all duration-300 opacity-70 hover:opacity-100 active:scale-85" />
-                  </button>
-                </div>
-       
-                )
-              )
-            }
-          </div>
-
         </div>
 
         {/* Timelines */}
@@ -241,13 +307,45 @@ export default function KeywordsTimeline() {
             <CardContent>
               <ChartContainer config={chartConfig}>
                 <LineChart
-                data={data}
-                margin={{
-                  top: 20,
+               data={displayedData}
+               margin={{
+                  top: 40,
                   left: 12,
                   right: 12,
                 }}
-            >
+                > 
+                <CartesianGrid vertical={false} />
+                <XAxis
+                  dataKey="annee"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  className={`${viga.className} text-[14px]`}
+                />
+                <ChartTooltip
+                  className = {`${viga.className} text-[14px]`}
+                  cursor={false}
+                  content={<ChartTooltipContent indicator="line" />}
+                /> 
+                {
+                  selectedTags.map((tag,index)=>{
+                    const config = chartConfig[tag];
+                    if (!config) return null;
+                    return (
+                    <Line
+                    key={index}
+                    dataKey={tag}
+                    type="natural"
+                    stroke={chartConfig[tag].color}
+                    strokeWidth={2}
+                    dot={{fill: chartConfig[tag].color}}
+                    activeDot={{r: 6}}
+                    >
+
+                    </Line>)
+                   }
+                  )
+                }
 
                 </LineChart>
 
@@ -258,6 +356,7 @@ export default function KeywordsTimeline() {
 
         </Card>
 
+      </div>
 
     </div>
   )
