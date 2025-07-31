@@ -4,7 +4,7 @@ import KeywordsTimeline from "@/components/semantic_analysis/keywordsTimeline"
 
 export default function semantic_analysis() {
   return (
-    <div className="bg-white m-3 rounded p-2 h-full">
+    <div className="p-2 flex flex-col h-full gap-2">
       <KeywordsCloud  />
       <KeywordsTimeline  />
     </div>

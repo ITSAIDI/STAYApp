@@ -164,6 +164,7 @@ export default function MapComponent({ entities }) {
     return percentages;
   }
 
+  
 
   async function getEntityVideos() 
   {
@@ -178,7 +179,7 @@ export default function MapComponent({ entities }) {
 
       console.log('selectedEntity  ',selectedEntity)
 
-      console.log('entityVideos  ',data)
+      //console.log('entityVideos  ',data)
 
       setEntityVideos(data)
       
@@ -235,7 +236,7 @@ export default function MapComponent({ entities }) {
   }, []);
 
 
-  //console.log('HoveredEntities',hoveredEntities)
+  console.log('HoveredEntities',hoveredEntities)
   //console.log('percentages',percentages)
 
   return (

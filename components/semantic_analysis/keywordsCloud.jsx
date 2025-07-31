@@ -74,7 +74,7 @@ export default function KeywordsCloud() {
     //console.log('tagsSorted  ',tagsSorted)
 
   return (
-    <div>
+    <div className="bg-white p-2 rounded-sm">
         {/* Title */}
         <h1 className = {`${viga.className} text-xl text-green1`}>Keywords Cloud</h1>
 

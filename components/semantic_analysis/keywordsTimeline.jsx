@@ -176,7 +176,7 @@ export default function KeywordsTimeline() {
 
     
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col bg-white rounded-sm p-2">
         {/* Title */}
         <h1 className = {`${viga.className} text-xl text-green1`}>Keywords Timelines</h1>
 
