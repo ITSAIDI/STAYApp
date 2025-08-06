@@ -15,7 +15,7 @@ export async function POST(request) {
     const body = await request.json()
     const keyword = body.keyword
 
-    console.log('body :',body)
+    //console.log('body :',body)
 
     
     const query = `

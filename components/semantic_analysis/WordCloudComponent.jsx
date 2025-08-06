@@ -52,6 +52,8 @@ export function WordCloudComponent({ words,tagsInit,maxValue,debouncedSetMax,min
     const [removeDisabled,setRemoveDisabled] = useState(true)
     const [addDisabled,setAddDisabled] = useState(true)
     const [cancelDisabled,setCancelDisabled] = useState(true)
+
+    const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
     
     function getRandomWords(list, count) {
     const shuffled = [...list].sort(() => 0.5 - Math.random());
@@ -92,7 +94,7 @@ export function WordCloudComponent({ words,tagsInit,maxValue,debouncedSetMax,min
       setTimeout(() => {
         setInputFocused(false);
         setSuggestions([]);
-      }, 100);
+      }, 400);
     };
 
     const handleSelect = (word) => {
@@ -125,6 +127,14 @@ export function WordCloudComponent({ words,tagsInit,maxValue,debouncedSetMax,min
         
       }
     }, [sortedWords]);
+
+    useEffect(() => {
+      const handleMouseMove = e => {
+        setMousePos({ x: e.clientX, y: e.clientY })
+      }
+      window.addEventListener('mousemove', handleMouseMove)
+      return () => window.removeEventListener('mousemove', handleMouseMove)
+    }, [])
 
     function handleRemove()
     {
@@ -339,13 +349,8 @@ export function WordCloudComponent({ words,tagsInit,maxValue,debouncedSetMax,min
     {/* Hover function */}
     {hoveredTag && (
       <div
-        className={`flex flex-col absolute bg-green3 text-green1 px-2 py-1 rounded shadow ${viga.className} whitespace-nowrap`}
-        style={{
-          top: hoveredTag.y - 50, // shift up to align better with word
-          left: hoveredTag.x-500,
-          pointerEvents: "none", // avoid interfering with mouse events
-          zIndex: 50,
-        }}
+        className= {`${viga.className} fixed bg-green3 text-green1 text-[16px] px-3 py-1.5 rounded-md pointer-events-none z-[1000]`}
+        style={{ top: mousePos.y + 10, left: mousePos.x + 10 }}
       >
         <p>{hoveredTag.tag}</p>
         <p>{`Frequency: ${hoveredTag.count}`}</p>
