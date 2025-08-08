@@ -9,8 +9,6 @@ export default function KeywordsNetwork({ loading, setLoading }) {
     let tagsInit = useRef(null)
     const [nodes, setNodes] = useState(null)
     const [links, setLinks] = useState(null)
-    const networkRef = useRef(null)
-    const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
 
 
     function getTags(results) {
@@ -63,7 +61,6 @@ export default function KeywordsNetwork({ loading, setLoading }) {
         console.log('Failing while fetching videos tags ',error)
         }
     }
-
     async function getInitialSamples() 
     {
         try 
@@ -90,26 +87,11 @@ export default function KeywordsNetwork({ loading, setLoading }) {
         setLoading(false);
     },[])
 
-    useEffect(() => {
-        if (!networkRef.current) return
-
-        const resizeObserver = new ResizeObserver(entries => {
-            for (let entry of entries) {
-                const { width, height } = entry.contentRect
-                setDimensions({ width, height })
-            }
-        })
-
-        resizeObserver.observe(networkRef.current)
-
-        return () => {
-            if (networkRef.current) resizeObserver.unobserve(networkRef.current)
-        }
-    }, [])
 
     //console.log('tagsInit.current  ',tagsInit.current)
-    console.log('links  ',links)
-    console.log('nodes  ',nodes)
+    //console.log('links  ',links)
+    //console.log('nodes  ',nodes)
+    //console.log('links  ',links)
 
 
   return (
@@ -118,25 +100,13 @@ export default function KeywordsNetwork({ loading, setLoading }) {
         {/* Title */}
         <h1 className = {`${viga.className} text-xl text-green1`}>Keywords Network</h1>
 
-        <div className="flex flex-row w-full">
-            <div className="w-[40%]">
-              <h1>Serch bar</h1>
-            </div>
-
-            <div ref={networkRef} className="w-[60%] h-[500px]">
-                {nodes &&(
-                    <NetworkComp
-                        nodes= {
-                            nodes
-                        }
-                        links = {
-                          links
-                        }
-                        width={dimensions.width}
-                        height={dimensions.height}
-                    />
-                )}
-            </div>
+        <div className="w-full h-full">
+            {nodes && tagsInit.current && <NetworkComp words={tagsInit.current.map(({ tag, count }) => ({ text: tag, value: count }))} 
+            nodes= {nodes} 
+            links = {links}
+            setNodes = {setNodes}
+            setLinks = {setLinks}
+            /> }
         </div>
         
     </div>

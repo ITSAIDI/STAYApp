@@ -13,6 +13,7 @@ const MIN_FONT_WEIGHT = 400;
 
 export function WordCloudComponent({ words,tagsInit,maxValue,debouncedSetMax,minValue,debouncedSetMin })
 {
+  //console.log('words  :',words)
 
     const categorizedWords = useMemo(() => {
         const total = words.length;
@@ -140,13 +141,13 @@ export function WordCloudComponent({ words,tagsInit,maxValue,debouncedSetMax,min
     {
       if(removeDisabled==false)
       {
+        setSortedWords(prevWords =>
+        prevWords.filter(w => w.text.toLowerCase() !== selected.text.toLowerCase())
+        ); 
+        
         setRemoveDisabled(true);
         setCancelDisabled(true);
         setSelected(null);
-
-        setSortedWords(prevWords =>
-        prevWords.filter(w => w.text.toLowerCase() !== selected.text.toLowerCase())
-        );
 
       }
     }
