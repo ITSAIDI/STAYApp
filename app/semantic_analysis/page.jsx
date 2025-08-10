@@ -14,7 +14,7 @@ export default function semantic_analysis() {
   return (
     <div className="p-2 flex flex-col h-full gap-2">
 
-      {/*
+      
       <KeywordsCloud loading={cloudLoading} setLoading={setCloudLoading} />
       {
         (!cloudLoading) && <KeywordsTimeline loading={timelineLoading} setLoading={setTimelineLoading}/>
@@ -22,8 +22,6 @@ export default function semantic_analysis() {
       {
         (!cloudLoading && !timelineLoading) && <KeywordsNetwork loading={networkLoading} setLoading={setNetworkLoading}/>
       }
-      */}
-      <KeywordsNetwork loading={networkLoading} setLoading={setNetworkLoading}  />
       
     </div>
   )

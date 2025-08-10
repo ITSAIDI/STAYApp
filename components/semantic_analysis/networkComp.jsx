@@ -421,7 +421,7 @@ export default function NetworkComp({words}) {
 
       {/* Network SVG */}
 
-      <div ref={DivSVG} className="h-[600px] border-1 border-gray-300 rounded-sm shadow-sm">
+      <div ref={DivSVG} className="h-[800px] border-1 border-gray-300 rounded-sm shadow-sm">
          <svg ref={svgRef} className='w-full h-full'/>
       </div>
 

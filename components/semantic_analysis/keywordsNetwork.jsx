@@ -53,9 +53,7 @@ export default function KeywordsNetwork({ loading, setLoading }) {
     
 
     useEffect(()=>{
-        setLoading(true);
         getVideosTags();
-        setLoading(false);
     },[])
 
 
