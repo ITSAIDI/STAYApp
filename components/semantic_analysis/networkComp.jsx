@@ -7,10 +7,13 @@ import { faCirclePlus, faTrash,faRotateLeft } from "@fortawesome/free-solid-svg-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
-export default function NetworkComp({words, nodes, links,setNodes,setLinks}) {
+export default function NetworkComp({words}) {
   const svgRef = useRef()
   const DivSVG = useRef()
   const debounceTimeout = useRef(null);
+
+  const [nodes, setNodes] = useState(null)
+  const [links, setLinks] = useState(null)
 
   const [hoveredLink, setHoveredLink] = useState(null)
   const [clickedNode, setClickedNode] = useState(null)
@@ -25,23 +28,29 @@ export default function NetworkComp({words, nodes, links,setNodes,setLinks}) {
   const [addDisabled,setAddDisabled] = useState(true)
   const [cancelDisabled,setCancelDisabled] = useState(true)
 
-  const [firstRun, setFirstRun] = useState(true);
+  //const [firstRun, setFirstRun] = useState(true);
 
-  const weights = links.map(e => +e.weight); 
-  const minWeight = d3.min(weights);
-  const maxWeight = d3.max(weights);
 
-  const colorScale = d3.scaleLinear()
-  .domain([minWeight, maxWeight])
-  .range(['green', 'red'])
-  .interpolate(d3.interpolateRgb);
 
-  
+  useEffect(()=>{
+        async function ExgetInitialSamples()
+         {
+           await getInitialSamples();
+         };
+         ExgetInitialSamples();
+   },[])
 
   useEffect(() => {
 
-    if (DivSVG.current)
+    if (DivSVG.current && links && nodes)
     {
+    const weights = links.map(e => +e.weight); 
+    const minWeight = d3.min(weights);
+    const maxWeight = d3.max(weights);
+
+    const colorScale = d3.scaleLinear()
+    .domain([minWeight, maxWeight])
+    .range(['#d7fce5', '#fa1b02'])
 
     const { width, height } = DivSVG.current.getBoundingClientRect();
 
@@ -50,11 +59,16 @@ export default function NetworkComp({words, nodes, links,setNodes,setLinks}) {
 
     const container = svg.append('g')
 
-    const simulation = d3.forceSimulation(nodes).force('link', d3.forceLink(links).id(d => d.id).distance(100))
+    const simulation = d3.forceSimulation(nodes)
+    .force('link', d3.forceLink(links)
+      .id(d => d.id)
+      .distance(120) // plus de distance entre les niveaux
+    )
+    .force('charge', d3.forceManyBody().strength(-300)) // répulsion plus forte
+    .force('center', d3.forceCenter(width / 2, height / 2))
+    .force('collide', d3.forceCollide().radius(70)) // évite chevauchement
 
-    if(firstRun) simulation.force('charge', d3.forceManyBody().strength(-10))
 
-    simulation.force('center', d3.forceCenter(width / 2, height / 2))
 
     
     const link = container.append('g')
@@ -83,13 +97,14 @@ export default function NetworkComp({words, nodes, links,setNodes,setLinks}) {
       .selectAll('circle')
       .data(nodes)
       .enter().append('circle')
-      .attr('r', 6)
+      .attr('r', 8)
       .attr('fill', '#13452D')
       .on('click', (event, d) => {
           setClickedNode(d);
           setSelected(d.id);
           setRemoveDisabled(false);
           setCancelDisabled(false);
+          setAddDisabled(false);
         })
       .call(d3.drag()
         .on('start', (event, d) => {
@@ -113,7 +128,7 @@ export default function NetworkComp({words, nodes, links,setNodes,setLinks}) {
       .data(nodes)
       .enter().append('text')
       .text(d => d.id)
-      .attr('font-size', 10)
+      .attr('font-size', 14)
       .attr('fill', '#13452D')
       .style('font-family', 'Viga, sans-serif')
       
@@ -147,6 +162,59 @@ export default function NetworkComp({words, nodes, links,setNodes,setLinks}) {
   }, [nodes, links])
 
 
+  async function getInitialSamples() 
+  {
+        try 
+        {
+        const res = await fetch('/api/semantic_analysis/keywordsNetwork')
+        const data = await res.json()
+        if(data) 
+            {
+                //console.log('data  :',data)
+                setLinks(data.links);
+                setNodes(data.nodes);
+            }
+        
+        } 
+        catch (error) 
+        {
+        console.log('Failing while fetching keyword network initial samples',error)
+        }
+  }
+  
+  async function getKeywordLinks() {
+    try {
+      const response = await fetch('/api/semantic_analysis/keywordsNetwork/keyword',
+        {
+          method:'POST',
+          headers :{ 'Content-Type': 'application/json' },
+          body: JSON.stringify({keyword:selected})
+        }
+      )
+      const data = await response.json();
+
+      return data;
+      //console.log('data keyword links : ',data);
+
+    } catch (error) {
+      console.log('Failing at keyword-Links fearching ',error)
+      return [];
+    }
+    
+  }
+
+  function getNodes(data)
+    {
+      const uniqueTags = new Set()
+      data.forEach(({ source, target }) => {
+        uniqueTags.add(source)
+        uniqueTags.add(target)
+      })
+
+      const nodes = Array.from(uniqueTags).map(tag => ({ 'id':tag }))
+      return nodes
+    }
+  
   function getRandomWords(list, count) {
     const shuffled = [...list].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, count);
@@ -155,38 +223,22 @@ export default function NetworkComp({words, nodes, links,setNodes,setLinks}) {
   function handleRemove() {
   if (removeDisabled === false && clickedNode) {
     // Disable Forces
-    setFirstRun(false);
+    //setFirstRun(false);
 
-    // Step 1: Remove clicked node
+     resetUI()
+  
     const filteredNodes = nodes.filter(n => n.id !== clickedNode.id);
     const filteredLinks = links.filter(
       l => l.source.id !== clickedNode.id && l.target.id !== clickedNode.id
     );
 
-    // Step 2: Identify connected node IDs
-    const connectedNodeIds = new Set();
-    filteredLinks.forEach(link => {
-      connectedNodeIds.add(link.source.id);
-      connectedNodeIds.add(link.target.id);
-    });
-
-    // Step 3: Remove isolated nodes
-    const cleanedNodes = filteredNodes.filter(n => connectedNodeIds.has(n.id));
-
     // Step 4: Update state
-    setNodes(cleanedNodes);
+    setNodes(filteredNodes);
     setLinks(filteredLinks);
-
-    // Step 5: Reset UI
-    setRemoveDisabled(true);
-    setCancelDisabled(true);
-    setSelected(null);
-    setClickedNode(null);
   }
 }
 
-
-  function handleCancel()
+  function resetUI()
   {
     setRemoveDisabled(true);
     setAddDisabled(true);
@@ -196,16 +248,36 @@ export default function NetworkComp({words, nodes, links,setNodes,setLinks}) {
     setQuery('');
   }
 
-  function handleAdd()
+  async function handleAdd()
   {
-    if(addDisabled==false)
+    if(addDisabled==false && selected)
     {
-      // Logic of Adding
 
-      setAddDisabled(true);
-      setCancelDisabled(true);
-      setSelected(null);
-      setQuery('');
+      resetUI()
+
+      const keywordLinks = await getKeywordLinks()
+      const keywordNodes = getNodes(keywordLinks); // The New Nodes that commes with the added keyword
+
+      // Update the list of Nodes 
+      setNodes(prev => {
+                const updated = [...(prev || [])];
+                keywordNodes.forEach(newNode => {
+                  if (!updated.some(node => node.id === newNode.id)) {
+                    updated.push(newNode);
+                  }
+                });
+                return updated;
+              });
+      // Update the list of links
+      setLinks([...links,...keywordLinks]);
+
+     
+
+      //console.log('keywordLinks  :',keywordLinks)
+      //console.log('keywordNodes  :',keywordNodes)
+
+   
+  
     };
     
   }
@@ -259,15 +331,15 @@ export default function NetworkComp({words, nodes, links,setNodes,setLinks}) {
   //console.log('clickedNode : ',clickedNode)
   //console.log('selected : ',selected)
   //console.log('query : ',query)
-  console.log('nodes : ',nodes)
-  console.log('links : ',links)
+  //console.log('nodes : ',nodes)
+  //console.log('links : ',links)
 
   return (
-    <div className='flex flex-row'>
+    <div className='flex flex-col gap-2'>
   
       {/* Interactivity elements */}
 
-      <div className="w-[40%] flex flex-col gap-1 items-start">
+      <div className="flex flex-col gap-1 items-start">
 
         {/* Search bar */}
         <div className={`${viga.className} relative w-full  text-green1`}>
@@ -314,7 +386,7 @@ export default function NetworkComp({words, nodes, links,setNodes,setLinks}) {
           </button>
 
           <button
-          onClick={()=>{handleCancel();}}
+          onClick={()=>{resetUI();}}
           disabled= {cancelDisabled}
           >
             <FontAwesomeIcon
@@ -349,7 +421,7 @@ export default function NetworkComp({words, nodes, links,setNodes,setLinks}) {
 
       {/* Network SVG */}
 
-      <div ref={DivSVG} className="w-[60%] h-[400px] border-1 border-gray-300 rounded-sm shadow-sm">
+      <div ref={DivSVG} className="h-[600px] border-1 border-gray-300 rounded-sm shadow-sm">
          <svg ref={svgRef} className='w-full h-full'/>
       </div>
 

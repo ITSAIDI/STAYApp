@@ -11,17 +11,47 @@ const pool = new Pool({
 
 export async function GET() {
   try {
-
-    const query = "select * from get_KN_random_samples();"
+    const query = `
+      SELECT *
+      FROM tag_cooccurrence_view
+      WHERE source NOT LIKE '% %'
+        AND target NOT LIKE '% %'
+      ORDER BY weight DESC
+      LIMIT 30;
+    `
 
     const client = await pool.connect()
-    const results = await client.query(query)
+    const { rows } = await client.query(query)
     client.release()
 
-    return NextResponse.json(results.rows)
+    if (rows.length === 0) {
+      return NextResponse.json({ nodes: [], links: [] })
+    }
+
+    const links = []
+    const nodes = new Set()
+    let counter = 0
+
+    for (const row of rows) {
+      if (nodes.size === 0 || nodes.has(row.source) || nodes.has(row.target)) {
+        nodes.add(row.source)
+        nodes.add(row.target)
+        links.push(row)
+      }
+    }
+
+    
+
+    return NextResponse.json(
+      { nodes: Array.from(nodes).map(tag=>({id:tag})),
+       links
+      }
+  )
 
   } catch (error) {
     console.error('Error in API', error)
-    return NextResponse.json({ error: 'Failed to fetch keyword network initial samples' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Failed to fetch connected keyword network' },
+    )
   }
 }
