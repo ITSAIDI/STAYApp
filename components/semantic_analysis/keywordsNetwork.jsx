@@ -57,7 +57,7 @@ export default function KeywordsNetwork({ loading, setLoading }) {
     },[])
 
 
-    //console.log('tagsInit.current  ',tagsInit.current)
+    console.log('tagsInit.current  ',tagsInit.current)
     //console.log('links  ',links)
     //console.log('nodes  ',nodes)
     //console.log('links  ',links)
