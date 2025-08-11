@@ -4,7 +4,6 @@
 import { viga } from "@/fonts"
 import NetworkComp from "./networkComp"
 import {useEffect,useRef } from "react"
-import NetworkTest from "./networkTest"
 
 
 
@@ -41,8 +40,10 @@ export default function KeywordsNetwork({ loading, setLoading }) {
         const data = await res.json()
         if(data) 
             {
-                tagsInit.current = getTags(data)
-                console.log('getTags(data)  Network :',getTags(data))
+                const response = getTags(data);
+                tagsInit.current = response;
+                console.log('response  Network :',response);
+                console.log('tagsInit.current From Ntwork  ',tagsInit.current)
             }
         
         } 
@@ -56,12 +57,6 @@ export default function KeywordsNetwork({ loading, setLoading }) {
     useEffect(()=>{
         getVideosTags();
     },[])
-
-
-    console.log('tagsInit.current From Ntwork  ',tagsInit.current)
-    //console.log('links  ',links)
-    //console.log('nodes  ',nodes)
-    //console.log('links  ',links)
 
 
   return (
