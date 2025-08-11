@@ -4,12 +4,13 @@
 import { viga } from "@/fonts"
 import NetworkComp from "./networkComp"
 import {useEffect,useState } from "react"
-
+import { ThreeDot } from "react-loading-indicators"
 
 
 export default function KeywordsNetwork({ loading, setLoading }) {
 
     const [tagsInit,setTagsInit] = useState(null)
+     const ThreeDotColor = '#13452D'
 
 
     function getTags(results) {
@@ -43,8 +44,6 @@ export default function KeywordsNetwork({ loading, setLoading }) {
             {
                 const response = getTags(data);
                 setTagsInit(response)
-                console.log('response  Network :',response);
-                console.log('tagsInit From Ntwork  ',tagsInit)
             }
         
         } 
@@ -54,27 +53,33 @@ export default function KeywordsNetwork({ loading, setLoading }) {
         }
     }
     
-
     useEffect(()=>{
         async function ExgetVideosTags()
          {
            await getVideosTags();
          };
+         setLoading(true);
          ExgetVideosTags();
+         setLoading(false);
    },[])
 
-    console.log('tagsInit From Ntwork Outside getVideosTags ',tagsInit)
 
   return (
     <div className="w-full bg-white rounded-sm p-2">
 
         {/* Title */}
         <h1 className = {`${viga.className} text-xl text-green1`}>Keywords Network</h1>
-
+        {loading ? 
+           <div className="flex items-center justify-center h-full w-full">
+             <ThreeDot variant="brick-stack"  size="small" color={ThreeDotColor}/>
+           </div>
+         
+         :
         <div className="w-full h-full">
             {tagsInit && <NetworkComp words={tagsInit.map(({ tag, count }) => ({ text: tag, value: count }))} /> }
         </div>
-        
+        }
+
     </div>
   )
 }
