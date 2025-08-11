@@ -66,12 +66,6 @@ export default function KeywordsNetwork({ loading, setLoading }) {
         <h1 className = {`${viga.className} text-xl text-green1`}>Keywords Network</h1>
 
         <div className="w-full h-full">
-            {
-                /*
-                <NetworkTest  />
-        
-                */
-            }
             {tagsInit.current && <NetworkComp words={tagsInit.current.map(({ tag, count }) => ({ text: tag, value: count }))} /> }
         </div>
         

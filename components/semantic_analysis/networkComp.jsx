@@ -8,6 +8,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
 export default function NetworkComp({words}) {
+
+  console.log('Im inside NetworkComp');
+
+   console.log('NetworkComp words',words);
+
   const svgRef = useRef()
   const DivSVG = useRef()
   const debounceTimeout = useRef(null);
