@@ -331,8 +331,8 @@ export default function NetworkComp({words}) {
   //console.log('clickedNode : ',clickedNode)
   //console.log('selected : ',selected)
   //console.log('query : ',query)
-  //console.log('nodes : ',nodes)
-  //console.log('links : ',links)
+  console.log('nodes : ',nodes)
+  console.log('links : ',links)
 
   return (
     <div className='flex flex-col gap-2'>
