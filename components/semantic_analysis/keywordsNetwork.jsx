@@ -3,12 +3,13 @@
 
 import { viga } from "@/fonts"
 import NetworkComp from "./networkComp"
-import {useEffect,useRef } from "react"
+import {useEffect,useState } from "react"
 
 
 
 export default function KeywordsNetwork({ loading, setLoading }) {
-    let tagsInit = useRef(null)
+
+    const [tagsInit,setTagsInit] = useState(null)
 
 
     function getTags(results) {
@@ -41,9 +42,9 @@ export default function KeywordsNetwork({ loading, setLoading }) {
         if(data) 
             {
                 const response = getTags(data);
-                tagsInit.current = response;
+                setTagsInit(response)
                 console.log('response  Network :',response);
-                console.log('tagsInit.current From Ntwork  ',tagsInit.current)
+                console.log('tagsInit From Ntwork  ',tagsInit)
             }
         
         } 
@@ -62,7 +63,7 @@ export default function KeywordsNetwork({ loading, setLoading }) {
          ExgetVideosTags();
    },[])
 
-    console.log('tagsInit.current From Ntwork Outside getVideosTags ',tagsInit.current)
+    console.log('tagsInit From Ntwork Outside getVideosTags ',tagsInit)
 
   return (
     <div className="w-full bg-white rounded-sm p-2">
@@ -71,7 +72,7 @@ export default function KeywordsNetwork({ loading, setLoading }) {
         <h1 className = {`${viga.className} text-xl text-green1`}>Keywords Network</h1>
 
         <div className="w-full h-full">
-            {tagsInit.current && <NetworkComp words={tagsInit.current.map(({ tag, count }) => ({ text: tag, value: count }))} /> }
+            {tagsInit && <NetworkComp words={tagsInit.map(({ tag, count }) => ({ text: tag, value: count }))} /> }
         </div>
         
     </div>
