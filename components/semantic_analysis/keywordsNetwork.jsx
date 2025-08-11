@@ -55,12 +55,15 @@ export default function KeywordsNetwork({ loading, setLoading }) {
     
 
     useEffect(()=>{
-        getVideosTags();
-    },[])
-
+        async function ExgetVideosTags()
+         {
+           await getVideosTags();
+         };
+         ExgetVideosTags();
+   },[])
 
     console.log('tagsInit.current From Ntwork Outside getVideosTags ',tagsInit.current)
-    
+
   return (
     <div className="w-full bg-white rounded-sm p-2">
 
