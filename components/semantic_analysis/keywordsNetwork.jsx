@@ -4,15 +4,13 @@
 import { viga } from "@/fonts"
 import NetworkComp from "./networkComp"
 import {useEffect,useState } from "react"
-import { ThreeDot } from "react-loading-indicators"
+
 
 
 export default function KeywordsNetwork({ loading, setLoading }) {
 
     const [tagsInit,setTagsInit] = useState(null)
-     const ThreeDotColor = '#13452D'
-
-
+    
     function getTags(results) {
         const tagCounts = {};
 
@@ -58,9 +56,7 @@ export default function KeywordsNetwork({ loading, setLoading }) {
          {
            await getVideosTags();
          };
-         setLoading(true);
          ExgetVideosTags();
-         setLoading(false);
    },[])
 
 
@@ -69,17 +65,10 @@ export default function KeywordsNetwork({ loading, setLoading }) {
 
         {/* Title */}
         <h1 className = {`${viga.className} text-xl text-green1`}>Keywords Network</h1>
-        {loading ? 
-           <div className="flex items-center justify-center h-full w-full">
-             <ThreeDot variant="brick-stack"  size="small" color={ThreeDotColor}/>
-           </div>
-         
-         :
         <div className="w-full h-full">
-            {tagsInit && <NetworkComp words={tagsInit.map(({ tag, count }) => ({ text: tag, value: count }))} /> }
+            {tagsInit && <NetworkComp words={tagsInit.map(({ tag, count }) => ({ text: tag, value: count }))} loading = {loading} setLoading = {setLoading} /> }
         </div>
-        }
-
+        
     </div>
   )
 }

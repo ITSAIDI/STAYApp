@@ -5,9 +5,11 @@ import * as d3 from 'd3'
 import { useEffect, useRef,useState } from 'react'
 import { faCirclePlus, faTrash,faRotateLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ThreeDot } from "react-loading-indicators"
 
+export default function NetworkComp({words,loading,setLoading}) {
 
-export default function NetworkComp({words}) {
+  const ThreeDotColor = '#13452D'
 
   const svgRef = useRef()
   const DivSVG = useRef()
@@ -42,6 +44,8 @@ export default function NetworkComp({words}) {
    },[])
 
   useEffect(() => {
+
+    setLoading(true);
 
     if (DivSVG.current && links && nodes)
     {
@@ -160,6 +164,9 @@ export default function NetworkComp({words}) {
       })
   )
   }
+
+  setLoading(false);
+
   }, [nodes, links])
 
 
@@ -332,13 +339,27 @@ export default function NetworkComp({words}) {
   //console.log('clickedNode : ',clickedNode)
   //console.log('selected : ',selected)
   //console.log('query : ',query)
-  console.log('nodes : ',nodes)
-  console.log('links : ',links)
+  //console.log('nodes : ',nodes)
+  //console.log('links : ',links)
 
+   //console.log('Network loading : ',loading)
+   
   return (
+    
     <div className='flex flex-col gap-2'>
+      {loading ? 
+           <div className="flex items-center justify-center h-full w-full">
+             <ThreeDot variant="brick-stack"  size="small" color={ThreeDotColor}/>
+           </div>
+         
+         :
+
+      <div>
+
+     
   
       {/* Interactivity elements */}
+
 
       <div className="flex flex-col gap-1 items-start">
 
@@ -434,7 +455,9 @@ export default function NetworkComp({words}) {
         >
           <p>{`Number of Co-occurrences: ${hoveredLink.weight}`}</p>
         </div>
-      )}
+      )} 
+     </div>
+       }
     </div>
     
  
