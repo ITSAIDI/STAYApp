@@ -42,6 +42,7 @@ export default function KeywordsNetwork({ loading, setLoading }) {
         if(data) 
             {
                 tagsInit.current = getTags(data)
+                console.log('getTags(data)  Network :',getTags(data))
             }
         
         } 
