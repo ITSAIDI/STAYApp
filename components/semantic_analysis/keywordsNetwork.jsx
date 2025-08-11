@@ -59,6 +59,8 @@ export default function KeywordsNetwork({ loading, setLoading }) {
     },[])
 
 
+    console.log('tagsInit.current From Ntwork Outside getVideosTags ',tagsInit.current)
+    
   return (
     <div className="w-full bg-white rounded-sm p-2">
 
