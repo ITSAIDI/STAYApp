@@ -8,7 +8,6 @@ import VideoSection from './videoSection'
 import { Combobox } from "./combobox"
 import { Calendar22 } from "./datePicker"
 
-
 const sortingList = [
   {
     value: "nombre_vues",

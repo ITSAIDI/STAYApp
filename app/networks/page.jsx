@@ -1,9 +1,14 @@
-import React from 'react'
+import ChannelsNetwork from "@/components/networks/channelsNetwork"
+import UsersNetwork from "@/components/networks/usersNetwork"
+
+
+
 
 export default function networks() {
   return (
-    <div >
-       <h1>Networks</h1>
+    <div className="flex flex-row gap-3 h-full w-full p-2">
+       <ChannelsNetwork  />
+       <UsersNetwork  />
     </div>
   )
 }
