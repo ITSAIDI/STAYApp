@@ -18,16 +18,7 @@ export async function GET() {
         const client = await pool.connect() 
         
         const Query = `
-        SELECT 
-            m.id_chaine as targetChannel,
-            v.id_chaine as sourceChannel,
-            m.id_video,
-            m.mention_titre,
-            m.mention_tags,
-            m.mention_description
-        FROM mentions AS m JOIN videos AS v ON m.id_video = v.id_video
-        JOIN chaines AS c ON v.id_chaine = c.id_chaine
-        WHERE c.pertinente = TRUE;
+        SELECT * FROM channelsMentions LIMIT 30;
         `
         const results = await client.query(Query)
         client.release()

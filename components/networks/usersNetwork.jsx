@@ -9,7 +9,7 @@ export default function UsersNetwork() {
  Mentions can be by the name or the ID of the destination channel.
   `
   return (
-    <div className="bg-white h-full w-1/2 p-2 rounded-sm">
+    <div className="bg-white h-full w-full p-2 rounded-sm">
        {/* Title */}
        <h1 className = {`${viga.className} text-xl text-green1`}>Users Network</h1>
        <p className="text-gray-500 font-bold whitespace-pre-line mt-2">{description}</p>

@@ -67,14 +67,11 @@ export default function NetworkComp({words,loading,setLoading}) {
     const simulation = d3.forceSimulation(nodes)
     .force('link', d3.forceLink(links)
       .id(d => d.id)
-      .distance(120) // plus de distance entre les niveaux
+      .distance(120) 
     )
-    .force('charge', d3.forceManyBody().strength(-300)) // répulsion plus forte
+    .force('charge', d3.forceManyBody().strength(-300))
     .force('center', d3.forceCenter(width / 2, height / 2))
-    .force('collide', d3.forceCollide().radius(70)) // évite chevauchement
-
-
-
+    .force('collide', d3.forceCollide().radius(70))
     
     const link = container.append('g')
       .selectAll('line')
@@ -139,7 +136,7 @@ export default function NetworkComp({words,loading,setLoading}) {
       
 
 
-    // This block updates the position of the links when nodes mouved.
+    // This block used to place nodes, links and textes on the svg.
     simulation.on('tick', () => {
       link
         .attr('x1', d => d.source.x)
