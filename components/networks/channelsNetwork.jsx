@@ -27,38 +27,14 @@ export default function ChannelsNetwork() {
     const response = await fetch('api/networks');
     const data = await response.json();
 
-    if (data && data.length) {
-      // Create nodes
-      const nodesMap = new Map();
-      data.forEach(item => {
-        if (!nodesMap.has(item.targetchannelid)) {
-          nodesMap.set(item.targetchannelid, {
-            id: item.targetchannelid,
-            logo: item.targetlogo
-          });
-        }
-        if (!nodesMap.has(item.sourcechannelid)) {
-          nodesMap.set(item.sourcechannelid, {
-            id: item.sourcechannelid,
-            logo: item.sourcelogo
-          });
-        }
-      });
-      const nodesArray = Array.from(nodesMap.values());
-
-      // Create links
-      const linksArray = data.map(item => ({
-        source: item.sourcechannelid,
-        target: item.targetchannelid,
-        mentioncount: Number(item.mentioncount || 0)
-      }));
+    if (data) {
 
       // Set state
-      setNodes(nodesArray);
-      setLinks(linksArray);
+      setNodes(data.nodes);
+      setLinks(data.links);
 
-      //console.log("Nodes:", nodesArray);
-      //console.log("Links:", linksArray);
+      //console.log("Nodes:", data.nodes);
+      //console.log("Links:", data.links);
 
     }
 
@@ -87,6 +63,8 @@ export default function ChannelsNetwork() {
 
     const svg = d3.select(svgRef.current)
 
+    svg.attr("width", width).attr("height", height-50);
+
     svg.selectAll('*').remove() // clear previous
 
     const container = svg.append('g')
@@ -94,7 +72,7 @@ export default function ChannelsNetwork() {
     const simulation = d3.forceSimulation(nodes)
     .force('link', d3.forceLink(links)
       .id(d => d.id)
-      .distance(120) 
+      .distance(100) 
     )
     .force('charge', d3.forceManyBody().strength(-300))
     .force('center', d3.forceCenter(width / 2, height / 2))
@@ -108,7 +86,7 @@ export default function ChannelsNetwork() {
       defs.append("marker")
         .attr("id", `arrowhead-${i}`)
         .attr("viewBox", "0 -5 10 10")
-        .attr("refX", 15) // adjust for node radius
+        .attr("refX", 33) // adjust for node radius
         .attr("refY", 0)
         .attr("markerWidth", 6)
         .attr("markerHeight", 6)
@@ -209,7 +187,7 @@ export default function ChannelsNetwork() {
   }, [nodes,links]);
 
   return (
-    <div ref={DivSVG} className="bg-white min-h-[500px] w-full p-2 rounded-sm">
+    <div ref={DivSVG} className="bg-white min-h-[650px] w-full p-5 rounded-sm">
        {/* Header */}
        <div className="flex flex-row gap-1">
           <h1 className = {`${viga.className} text-xl text-green1`}>Channels Network</h1>
@@ -217,7 +195,7 @@ export default function ChannelsNetwork() {
        </div>
 
        {/* Network */}
-      <svg ref={svgRef} className='w-full h-full'/>
+      <svg ref={svgRef}/>
 
       {/* Hover function */}
       {hoveredLink && (

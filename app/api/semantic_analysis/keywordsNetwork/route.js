@@ -9,6 +9,7 @@ const pool = new Pool({
   port: parseInt(process.env.DB_PORT),
 })
 
+
 export async function GET() {
   try {
     const query = `
@@ -30,7 +31,6 @@ export async function GET() {
 
     const links = []
     const nodes = new Set()
-    let counter = 0
 
     for (const row of rows) {
       if (nodes.size === 0 || nodes.has(row.source) || nodes.has(row.target)) {

@@ -1,7 +1,7 @@
 'use client'
 
 import { viga } from "@/fonts"
-
+import InfoBull from "../ui/infoBull"
 
 export default function UsersNetwork() {
   const description = `This network represents the relationships between self-sufficiency channels. 
@@ -10,9 +10,11 @@ export default function UsersNetwork() {
   `
   return (
     <div className="bg-white h-full w-full p-2 rounded-sm">
-       {/* Title */}
-       <h1 className = {`${viga.className} text-xl text-green1`}>Users Network</h1>
-       <p className="text-gray-500 font-bold whitespace-pre-line mt-2">{description}</p>
+      {/* Header */}
+      <div className="flex flex-row gap-1">
+          <h1 className = {`${viga.className} text-xl text-green1`}>Channels Network</h1>
+          <InfoBull  information={description}/>
+      </div>
     </div>
   )
 }

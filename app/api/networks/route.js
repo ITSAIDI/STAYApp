@@ -17,13 +17,51 @@ export async function GET() {
     {
         const client = await pool.connect() 
         
-        const Query = `
-        SELECT * FROM channelsMentions LIMIT 30;
+        const query = `
+        SELECT * FROM channelsMentions LIMIT 100;
         `
-        const results = await client.query(Query)
+        const { rows } = await client.query(query)
         client.release()
 
-        return NextResponse.json(results.rows);
+        if (rows.length === 0) {
+        return NextResponse.json({ nodes: [], links: [] })
+        }
+
+        const links = []
+        const nodes = new Map()
+
+        for (const row of rows) {
+            if (nodes.size === 0 || nodes.has(row.sourcechannelid) || nodes.has(row.targetchannelid)) 
+            {
+                // Add source node if not already added
+                if (!nodes.has(row.sourcechannelid)) {
+                nodes.set(row.sourcechannelid, {
+                    id: row.sourcechannelid,
+                    logo: row.sourcelogo   // whatever field contains logo
+                })
+                }
+
+                // Add target node if not already added
+                if (!nodes.has(row.targetchannelid)) {
+                nodes.set(row.targetchannelid, {
+                    id: row.targetchannelid,
+                    logo: row.targetlogo
+                })
+                }
+
+                // Push the link
+                links.push({
+                source: row.sourcechannelid,
+                target: row.targetchannelid,
+                mentioncount: row.mentioncount
+                })
+            }
+            }
+        const nodesArray = Array.from(nodes.values());
+
+        return NextResponse.json({ nodes: nodesArray,links})
+
+
     } 
     catch (error) 
     {
