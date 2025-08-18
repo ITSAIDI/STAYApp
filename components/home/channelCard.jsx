@@ -3,7 +3,6 @@ import Image from 'next/image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { transformDateAddOneDay } from '@/utils/utils1'
 
-
 export default function ChannelCard({profileURL,channelName,creationDate,label,channelStats,bio}) {
   return (
     <div>

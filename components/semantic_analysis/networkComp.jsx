@@ -297,10 +297,12 @@ export default function NetworkComp({words,loading,setLoading}) {
         if (value.trim() === '') {
           if (inputFocused) {
             setSuggestions(getRandomWords(words, 10));
-          } else {
+          } 
+          else {
             setSuggestions([]);
           }
-        } else {
+        } 
+        else {
           const filtered = words
             .filter(({ text }) => text.toLowerCase().startsWith(value.toLowerCase()))
             .sort((a, b) => b.value - a.value);
@@ -323,6 +325,7 @@ export default function NetworkComp({words,loading,setLoading}) {
       setSuggestions([]);
     }, 400);
   };
+
 
   const handleSelect = (word) => {
       setQuery(word.text);

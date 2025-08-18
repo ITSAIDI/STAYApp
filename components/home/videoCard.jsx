@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import {faEye,faThumbsUp } from '@fortawesome/free-solid-svg-icons'
 import { faYoutube } from '@fortawesome/free-brands-svg-icons'
-import { viga,poppins } from '@/fonts'
+import { viga } from '@/fonts'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 
