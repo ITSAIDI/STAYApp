@@ -53,7 +53,7 @@ export async function GET() {
                 links.push({
                 source: row.sourcechannelid,
                 target: row.targetchannelid,
-                mentioncount: row.mentioncount
+                mentioncount: Number(row.mentioncount)
                 })
             }
             }

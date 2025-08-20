@@ -6,26 +6,37 @@ import { useEffect, useState,useRef } from "react"
 import Image from 'next/image'
 import * as d3 from "d3";
 import { transformDateAddOneDay } from "@/utils/utils1"
+import { faCirclePlus, faTrash,faRotateLeft,faExpand } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faYoutube } from '@fortawesome/free-brands-svg-icons'
 
 export default function ChannelsNetwork() {
-  const description = `This network represents the relationships between self-sufficiency channels. 
- Each node is a channel, and each edge represents mentions in the title, description, or tags of videos from the source channel.
- Mentions can be by the name or the ID of the destination channel.
+  const description = 
+  `* This network represents the relationships between channels. 
+  * A node is a channel, an edge is mentions from source to target channel ( in the title, description, or tags of videos from the source channel).
+  Expand_Button featch the most 5 mentioned channels by the clicked channel (Source).
+  Add_Button featch 10 edges in witch added channel is a Source or Target.
+  Cancel_Button undo an action
+  Delete_Button delete a clicked channel
   `
   const [nodes, setNodes] = useState(null);
   const [links, setLinks] = useState(null);
   const [hoveredLink, setHoveredLink] = useState(null)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
-  // Interactivity elements
+  // Search bar States 
   const debounceTimeout = useRef(null);
   const [channelsList,setChannelsList] = useState(null);
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [selected, setSelected] = useState();
   const [inputFocused, setInputFocused] = useState(false);
+  
+  // Buttons bar States 
+  const [removeDisabled,setRemoveDisabled] = useState(true)
+  const [addDisabled,setAddDisabled] = useState(true)
+  const [expandDisabled,setExpandDisabled] = useState(true)
+  const [cancelDisabled,setCancelDisabled] = useState(true)
 
 
   // Search handling Functions
@@ -76,10 +87,102 @@ export default function ChannelsNetwork() {
       setQuery(channel.channelname);
       setSelected(channel);
       setSuggestions([]);
+      setAddDisabled(false);
+      setCancelDisabled(false);
     };
 
-  // Refs for the Network SVG  
+  // Buttons handling functions
 
+  function resetUI()
+  {
+    setRemoveDisabled(true);
+    setAddDisabled(true);
+    setCancelDisabled(true);
+    setExpandDisabled(true);
+    setSelected(null);
+    setQuery('');
+  }
+
+  function handleAdd()
+  {
+    if(!addDisabled  && selected)
+    {
+      getAddChannel();
+      resetUI();
+    }
+  }
+
+  function handleRemove()
+  {
+    if(selected && !removeDisabled)
+    {
+
+      const filteredNodes = nodes.filter(node => node.id !== selected.id_chaine);
+      const filteredLinks = links.filter(link => link.source.id !== selected.id_chaine && link.target.id !== selected.id_chaine );
+
+      setNodes(filteredNodes);
+      setLinks(filteredLinks);
+
+      resetUI()
+      
+    }
+    
+  }
+
+
+  async function handleExpand()
+  {
+    if(!expandDisabled  && selected)
+    {
+      const expandData = await getExpandChannel();
+
+      const newNodes = [];
+      const seen = new Set();
+      
+      expandData.forEach(d => {
+          // Add source node
+          if (!seen.has(d.sourcechannelid)) {
+            newNodes.push({ id: d.sourcechannelid, logo: d.sourcelogo });
+            seen.add(d.sourcechannelid);
+          }
+          // Add target node
+          if (!seen.has(d.targetchannelid)) {
+            newNodes.push({ id: d.targetchannelid, logo: d.targetlogo });
+            seen.add(d.targetchannelid);
+          }
+        });
+
+      const newLinks = expandData.map(d => ({
+          source: { id: d.sourcechannelid },
+          target: { id: d.targetchannelid },
+          mentioncount: Number(d.mentioncount)
+       }));
+
+       setNodes(prevNodes => {
+      const existingIds = new Set(prevNodes.map(n => n.id));
+      return [
+        ...prevNodes,
+        ...newNodes.filter(n => !existingIds.has(n.id))
+        ];
+      });
+
+       setLinks(prevLinks => {
+      const existingLinks = new Set(prevLinks.map(l => `${l.source.id}-${l.target.id}`));
+      return [
+        ...prevLinks,
+        ...newLinks.filter(l => !existingLinks.has(`${l.source.id}-${l.target.id}`))
+      ];
+    });
+      
+      //console.log('newNodes  :',newNodes);
+      //console.log('newLinks  :',newLinks);
+    }
+
+   resetUI();
+  }
+
+  // Refs for the Network SVG  
+  
   const svgRef = useRef();
   const DivSVG = useRef();
 
@@ -121,6 +224,43 @@ export default function ChannelsNetwork() {
     console.log('Error while fetching mentions data:', error);
   }
 }
+  async function getExpandChannel() {
+    // Featch the 5 most mentionned channels by the expanded channel
+    try {
+      const response = await fetch('api/networks/expand', 
+        {
+          method:'POST',
+          headers :{ 'Content-Type': 'application/json' },
+          body: JSON.stringify({channelID:selected.id_chaine})
+        });
+      const data = await response.json();
+
+      console.log('Expand  :',data);
+      
+      return data;
+      
+    } catch (error) {
+      console.log('Error while fetching channel childs:', error);
+    }
+  }
+
+  async function getAddChannel() {
+    // Featch the 10 most height number of mentions links where channel is Source/Destination
+    try {
+      const response = await fetch('api/networks/add', 
+        {
+          method:'POST',
+          headers :{ 'Content-Type': 'application/json' },
+          body: JSON.stringify({channelID:selected.id_chaine})
+        });
+      const data = await response.json();
+
+      console.log('Add  :',data);
+      
+    } catch (error) {
+      console.log('Error while fetching channel strong relations: ', error);
+    }
+  }
 
  useEffect(()=>{
     getNetworkData();
@@ -225,6 +365,9 @@ export default function ChannelsNetwork() {
       .on('click', (event, d) => {
 
         setSelected(channelsList?.find(c => c.id_chaine === d.id));
+        setExpandDisabled(false);
+        setCancelDisabled(false);
+        setRemoveDisabled(false);
 
         })
        .call(d3.drag()
@@ -268,6 +411,28 @@ export default function ChannelsNetwork() {
 
   }, [nodes,links,channelsList]);
 
+  useEffect(()=>
+  {
+    // To adjust the vx vy NaN issue We need to map source and target to existing nodes in the State.
+
+    if(nodes)
+    {
+      const nodeById = new Map(nodes.map(n => [n.id, n]));
+      const fixedLinks = links.map(l => ({
+        ...l,
+        source: nodeById.get(l.source.id ), // si l.source est un objet → .id, sinon c’est déjà un id
+        target: nodeById.get(l.target.id )
+      }));
+
+      setLinks(fixedLinks);
+    }
+
+  },[nodes])
+
+  
+  console.log('Selected Channel :',selected);
+  console.log('Nodes :',nodes);
+  console.log('Links :',links);
 
   return (
     <div className="bg-white h-[1100px] w-full p-2 rounded-sm">
@@ -312,8 +477,62 @@ export default function ChannelsNetwork() {
             </div>
             
             {/* Buttons */}
-            <div>
+            <div className="flex flex-row gap-2 items-center mt-2">
+                <button
+                onClick={()=>{handleRemove();}}
+                disabled = {removeDisabled}
+                >
+                  <FontAwesomeIcon 
+                  className={`text-[20px] transition-all duration-300 ${
+                    removeDisabled
+                      ? 'text-gray-300' 
+                      : 'text-red-400 hover:text-red-500 active:scale-85'
+                  }`}
+                  icon={faTrash}/>
+                </button>
+      
+                <button
+                onClick={()=>{resetUI();}}
+                disabled= {cancelDisabled}
+                >
+                  <FontAwesomeIcon
+                    icon={faRotateLeft}
+                    className={`text-[20px] transition-all duration-300 ${
+                      cancelDisabled
+                        ? 'text-gray-300'
+                        : 'text-gray-400 hover:text-gray-500 active:scale-85'
+                    }`}
+                  />
+                </button>
+      
+                <button
+                onClick={()=>{handleAdd();}}
+                disabled= {addDisabled}
+                >
+                  
+                    <FontAwesomeIcon
+                      icon={faCirclePlus}
+                      className={`text-[20px] transition-all duration-300 ${
+                        addDisabled
+                          ? 'text-gray-300'
+                          : 'text-green-400 hover:text-green-500 active:scale-85'
+                      }`}
+                    />
+                </button>
 
+                <button
+                onClick={()=>{handleExpand();}}
+                disabled= {expandDisabled}
+                >
+                  <FontAwesomeIcon
+                    icon={faExpand}
+                    className={`text-[20px] transition-all duration-300 ${
+                      expandDisabled
+                        ? 'text-gray-300'
+                        : 'text-yellow-400 hover:text-yellow-500 active:scale-85'
+                    }`}
+                  />
+                </button>
             </div>
 
           </div>
