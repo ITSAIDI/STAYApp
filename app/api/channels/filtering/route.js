@@ -46,7 +46,7 @@ export async function POST(request) {
     */
 
     if (conditions.length > 0) {
-      query += ' WHERE date_releve_chaine = (SELECT MAX(date_releve_chaine) FROM chaines_metriques)' + conditions.join(' AND ')
+      query += ' WHERE date_releve_chaine = (SELECT MAX(date_releve_chaine) FROM chaines_metriques) AND ' + conditions.join(' AND ')
     }
 
     if (statChoice) {
