@@ -67,7 +67,7 @@ export async function POST(request) {
       }
     }
 
-    //query += ' LIMIT 10'
+    query += ' LIMIT 10'
 
     const client = await pool.connect()
     const results = await client.query(query, values)

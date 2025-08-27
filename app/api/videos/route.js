@@ -33,6 +33,7 @@ export async function GET() {
             ON videos.id_video = videos_metriques.id_video 
             AND date_releve_video = (SELECT MAX(date_releve_video) FROM videos_metriques)
         order by videos.id_video
+        LIMIT 10
         `
         const results = await client.query(Query)
         client.release()
