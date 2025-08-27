@@ -25,7 +25,6 @@ export async function POST(request) {
     let query = `
       SELECT * FROM chaines
       INNER JOIN chaines_metriques ON chaines.id_chaine = chaines_metriques.id_chaine
-      WHERE date_releve_chaine = (SELECT MAX(date_releve_chaine) FROM chaines_metriques)
     `
     const conditions = []
     const values = []
@@ -42,12 +41,12 @@ export async function POST(request) {
 
    /* if (collectionDate) {
      values.push(collectionDate)
-      conditions.push(`date_releve_chaine = $${values.length}`)
+     conditions.push(`date_releve_chaine = $${values.length}`)
     }
     */
 
     if (conditions.length > 0) {
-      query += ' WHERE ' + conditions.join(' AND ')
+      query += ' WHERE date_releve_chaine = (SELECT MAX(date_releve_chaine) FROM chaines_metriques)' + conditions.join(' AND ')
     }
 
     if (statChoice) {
@@ -57,7 +56,7 @@ export async function POST(request) {
       }
     }
 
-    query += ' LIMIT 10'
+    //query += ' LIMIT 10'
 
     const client = await pool.connect()
     const results = await client.query(query, values)
