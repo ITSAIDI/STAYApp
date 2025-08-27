@@ -31,10 +31,8 @@ export async function GET() {
         FROM videos
         INNER JOIN videos_metriques 
             ON videos.id_video = videos_metriques.id_video 
-            AND videos_metriques.date_releve_video = '2025-05-21'
+            AND date_releve_video = (SELECT MAX(date_releve_video) FROM videos_metriques)
         order by videos.id_video
-        LIMIT 10;
-
         `
         const results = await client.query(Query)
         client.release()

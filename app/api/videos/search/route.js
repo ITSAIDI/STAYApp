@@ -39,7 +39,7 @@ export async function GET(request) {
           videos_metriques.date_releve_video
         FROM videos
         INNER JOIN videos_metriques 
-        ON videos.id_video = videos_metriques.id_video AND videos_metriques.date_releve_video = '2025-05-21'
+        ON videos.id_video = videos_metriques.id_video AND date_releve_video = (SELECT MAX(date_releve_video) FROM videos_metriques)
         where lower(videos.titre) like $1 
         order by videos.titre  
         limit 5;
