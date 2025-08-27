@@ -170,8 +170,8 @@ export default function ChannelsLeaderboard() {
         <div className="flex flex-wrap gap-3 mt-2 items-baseline-last">
             <Combobox value = {statChoice} setValue={setStatChoice} itemsList={sortingList} text={"Sort channels"}/>
             <Combobox value = {order} setValue={setOrder} itemsList={orderingList} text={"Select order"} />
-            {/*<Combobox value = {collectionDate} setValue={setCollectionDate} itemsList={collectionDateList} text={"Collection Date"} />
-            <Calendar22 title={'Creation Date (From)'} date={creationDateFrom} setDate={setCreationDateFrom}/>*/}
+            {/*<Combobox value = {collectionDate} setValue={setCollectionDate} itemsList={collectionDateList} text={"Collection Date"} />*/}
+            <Calendar22 title={'Creation Date (From)'} date={creationDateFrom} setDate={setCreationDateFrom}/>
             <Calendar22 title={'Creation Date (To)'} date={creationDateTo} setDate={setCreationDateTo}/>
         </div>
 
