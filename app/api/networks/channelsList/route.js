@@ -18,13 +18,15 @@ export async function GET() {
         const client = await pool.connect() 
         
         const query = `
-        SELECT 
-            id_chaine,
-            LOWER(nom) as channelname,
-            logo,
-            date_creation
-        FROM chaines 
-        WHERE pertinente = TRUE;
+            SELECT 
+                c.id_chaine,
+                LOWER(c.nom) as nom,
+                c.logo,
+                c.date_creation,
+                cm.nombre_abonnes_total
+            FROM chaines c JOIN chaines_metriques cm ON c.id_chaine = cm.id_chaine
+            WHERE pertinente = TRUE 
+            AND cm.date_releve_chaine = (SELECT MAX(date_releve_chaine) FROM chaines_metriques);
         `
         const { rows } = await client.query(query)
         client.release()

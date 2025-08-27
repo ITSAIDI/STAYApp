@@ -30,7 +30,7 @@ export default function HomeStatistics() {
       textColor: 'text-white',
       bgColor: 'bg-green1',
       number: stats.numChannels,
-      title: 'Number of pertinente channels',
+      title: 'Number of channels',
       icon: faTv
     },
     {

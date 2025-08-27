@@ -17,7 +17,9 @@ export async function POST(request) {
 
      //console.log("The received body videos :",body)
 
-    const { collectionDate, publicationDateFrom, publicationDateTo, statChoice, order } = body
+    const { 
+      //collectionDate, 
+      publicationDateFrom, publicationDateTo, statChoice, order } = body
      
     let query = `
       SELECT 
@@ -48,12 +50,13 @@ export async function POST(request) {
       values.push(publicationDateTo)
       conditions.push(`date_publication <= $${values.length}`)
     }
-
+    /*
     if (collectionDate) {
       values.push(collectionDate)
       conditions.push(`date_releve_video = $${values.length}`)
     }
-
+    */
+   
     if (conditions.length > 0) {
       query += ' WHERE ' + conditions.join(' AND ')
     }

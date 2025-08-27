@@ -62,7 +62,7 @@ export default function ChannelsNetwork() {
     } 
 
     else {
-          const filtered = channelsList.filter(({ channelname }) => channelname.startsWith(value.toLowerCase()))
+          const filtered = channelsList.filter(({ nom }) => nom.includes(value.toLowerCase()))
           setSuggestions(filtered);
         }
     }, 1000);
@@ -84,7 +84,7 @@ export default function ChannelsNetwork() {
   };
 
   const handleSelect = (channel) => {
-      setQuery(channel.channelname);
+      setQuery(channel.nom);
       setSelected(channel);
       setSuggestions([]);
       setAddDisabled(false);
@@ -102,12 +102,61 @@ export default function ChannelsNetwork() {
     setSelected(null);
     setQuery('');
   }
+  
+  function updateNetwork(newData)
+  {
+    const newNodes = [];
+    const seen = new Set();
+      
+    newData.forEach(d => {
+          // Add source node
+          if (!seen.has(d.sourcechannelid)) {
+            newNodes.push({ id: d.sourcechannelid, logo: d.sourcelogo });
+            seen.add(d.sourcechannelid);
+          }
+          // Add target node
+          if (!seen.has(d.targetchannelid)) {
+            newNodes.push({ id: d.targetchannelid, logo: d.targetlogo });
+            seen.add(d.targetchannelid);
+          }
+        });
 
-  function handleAdd()
+    const newLinks = newData.map(d => ({
+          source: { id: d.sourcechannelid },
+          target: { id: d.targetchannelid },
+          mentioncount: Number(d.mentioncount)
+       }));
+
+    setNodes(prevNodes => {
+      const nodesArray = prevNodes || [];
+      const existingIds = new Set(nodesArray.map(n => n.id));
+      return [
+        ...nodesArray,
+        ...newNodes.filter(n => !existingIds.has(n.id))
+      ];
+    });
+
+
+    setLinks(prevLinks => {
+      const linksArray = prevLinks || [];
+      const existingLinks = new Set(linksArray.map(l => `${l.source.id}-${l.target.id}`));
+      return [
+        ...linksArray,
+        ...newLinks.filter(l => !existingLinks.has(`${l.source.id}-${l.target.id}`))
+      ];
+    });
+
+
+  }
+
+  async function handleAdd()
   {
     if(!addDisabled  && selected)
     {
-      getAddChannel();
+      const addingData = await getAddChannel();
+      updateNetwork(addingData);
+      //console.log('addingData : ',addingData);
+
       resetUI();
     }
   }
@@ -129,50 +178,12 @@ export default function ChannelsNetwork() {
     
   }
 
-
   async function handleExpand()
   {
     if(!expandDisabled  && selected)
     {
       const expandData = await getExpandChannel();
-
-      const newNodes = [];
-      const seen = new Set();
-      
-      expandData.forEach(d => {
-          // Add source node
-          if (!seen.has(d.sourcechannelid)) {
-            newNodes.push({ id: d.sourcechannelid, logo: d.sourcelogo });
-            seen.add(d.sourcechannelid);
-          }
-          // Add target node
-          if (!seen.has(d.targetchannelid)) {
-            newNodes.push({ id: d.targetchannelid, logo: d.targetlogo });
-            seen.add(d.targetchannelid);
-          }
-        });
-
-      const newLinks = expandData.map(d => ({
-          source: { id: d.sourcechannelid },
-          target: { id: d.targetchannelid },
-          mentioncount: Number(d.mentioncount)
-       }));
-
-       setNodes(prevNodes => {
-      const existingIds = new Set(prevNodes.map(n => n.id));
-      return [
-        ...prevNodes,
-        ...newNodes.filter(n => !existingIds.has(n.id))
-        ];
-      });
-
-       setLinks(prevLinks => {
-      const existingLinks = new Set(prevLinks.map(l => `${l.source.id}-${l.target.id}`));
-      return [
-        ...prevLinks,
-        ...newLinks.filter(l => !existingLinks.has(`${l.source.id}-${l.target.id}`))
-      ];
-    });
+      updateNetwork(expandData)
       
       //console.log('newNodes  :',newNodes);
       //console.log('newLinks  :',newLinks);
@@ -255,7 +266,8 @@ export default function ChannelsNetwork() {
         });
       const data = await response.json();
 
-      console.log('Add  :',data);
+      if(data) return data
+      
       
     } catch (error) {
       console.log('Error while fetching channel strong relations: ', error);
@@ -263,7 +275,7 @@ export default function ChannelsNetwork() {
   }
 
  useEffect(()=>{
-    getNetworkData();
+    //getNetworkData();  // Network initialization
     getChannelsList();
   },[])
 
@@ -301,43 +313,53 @@ export default function ChannelsNetwork() {
     // Define Defs
     const defs = container.append("defs");
 
-   // Create one arrow marker per link with its own color
+    const nodeRadius = 30 // circle radius
+
     links.forEach((d, i) => {
       defs.append("marker")
         .attr("id", `arrowhead-${i}`)
         .attr("viewBox", "0 -5 10 10")
-        .attr("refX", 33) // adjust for node radius
-        .attr("refY", 0)
-        .attr("markerWidth", 6)
-        .attr("markerHeight", 6)
+        .attr("refX", nodeRadius) // push arrowhead out to edge of circle
+        .attr("refY", -3)
+        .attr("markerWidth", 14)
+        .attr("markerHeight", 14)
+        .attr("markerUnits", "userSpaceOnUse")
         .attr("orient", "auto")
         .append("path")
         .attr("d", "M0,-5L10,0L0,5")
-        .attr("fill", colorScale(+d.mentioncount)) // match link color
+        .attr("fill", colorScale(+d.mentioncount))
+    })
 
-    });
      
-    const link = container.append('g')
-    .selectAll('line')
-    .data(links)
-    .enter().append('line')
-    .attr('stroke', d => colorScale(+d.mentioncount))
-    .attr('stroke-opacity', 1)
-    .attr('stroke-width', 2)
-    .attr("marker-end", (d, i) => `url(#arrowhead-${i})`)
-    .on('mouseover', function(event, d) {
-            d3.select(this)
-              .attr('stroke-width', 4)
+const link = container.append('g')
+  .selectAll('path')
+  .data(links)
+  .enter().append('path')
+  .attr('d', d => {
+    const dx = d.target.x - d.source.x
+    const dy = d.target.y - d.source.y
+    const dr = Math.sqrt(dx * dx + dy * dy) * 1.5  // curve radius
+    return `M${d.source.x},${d.source.y} A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`
+  })
+  .attr('stroke', d => colorScale(+d.mentioncount))
+  .attr('stroke-opacity', 1)
+  .attr('stroke-width', 2)
+  .attr('fill', 'none')
+  .attr("marker-end", (d, i) => `url(#arrowhead-${i})`)
+  .on('mouseover', function(event, d) {
+    d3.select(this)
+      .attr('stroke-width', 4)
+    setHoveredLink(d)  
+    setMousePos({ x: event.clientX, y: event.clientY })  
+  })
+  .on('mouseout', function(event, d) {
+    d3.select(this)
+      .attr('stroke-width', 2)     
+    setHoveredLink(null)   
+    setMousePos({ x: 0, y: 0 })      
+  })
 
-            setHoveredLink(d)  
-            setMousePos({ x: event.clientX, y: event.clientY })  
-          })
-    .on('mouseout', function(event, d) {
-            d3.select(this)
-              .attr('stroke-width', 2)     
-              setHoveredLink(null)   
-              setMousePos({ x: 0, y: 0 })      
-          })
+    
 
     // Creating patterns to hold Logo image of each node
     nodes.forEach(d => {
@@ -360,7 +382,7 @@ export default function ChannelsNetwork() {
       .selectAll('circle')
       .data(nodes)
       .enter().append('circle')
-      .attr('r', 30)
+      .attr('r', nodeRadius)
       .attr('fill', d => `url(#logo-${d.id})`)
       .on('click', (event, d) => {
 
@@ -388,16 +410,18 @@ export default function ChannelsNetwork() {
           }))
 
     simulation.on('tick', () => {
-      link
-        .attr('x1', d => d.source.x)
-        .attr('y1', d => d.source.y)
-        .attr('x2', d => d.target.x)
-        .attr('y2', d => d.target.y)
+      link.attr('d', d => {
+        const dx = d.target.x - d.source.x
+        const dy = d.target.y - d.source.y
+        const dr = Math.sqrt(dx * dx + dy * dy) * 1.5 // curve radius
+        return `M${d.source.x},${d.source.y} A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`
+      })
 
-      node
-        .attr('cx', d => d.x)
-        .attr('cy', d => d.y)
-    })
+  node
+    .attr('cx', d => d.x)
+    .attr('cy', d => d.y)
+})
+
 
     svg.call(
     d3.zoom()
@@ -420,7 +444,7 @@ export default function ChannelsNetwork() {
       const nodeById = new Map(nodes.map(n => [n.id, n]));
       const fixedLinks = links.map(l => ({
         ...l,
-        source: nodeById.get(l.source.id ), // si l.source est un objet → .id, sinon c’est déjà un id
+        source: nodeById.get(l.source.id ), 
         target: nodeById.get(l.target.id )
       }));
 
@@ -430,9 +454,10 @@ export default function ChannelsNetwork() {
   },[nodes])
 
   
-  console.log('Selected Channel :',selected);
-  console.log('Nodes :',nodes);
-  console.log('Links :',links);
+  //console.log('Selected Channel :',selected);
+  //console.log('Nodes :',nodes);
+  //console.log('Links :',links);
+  console.log('channelsList :',channelsList);
 
   return (
     <div className="bg-white h-[1100px] w-full p-2 rounded-sm">
@@ -468,7 +493,7 @@ export default function ChannelsNetwork() {
                   onClick={() => handleSelect(channel)}
                   className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                 >
-                  <span>{channel.channelname}</span>
+                  <span>{channel.nom}</span>
                 </li>
               ))}
             </ul>
@@ -541,7 +566,7 @@ export default function ChannelsNetwork() {
           <div className="w-[50%]">
             {
               selected && 
-              <div className="flex flex-row gap-5 items-start">
+              <div className="flex flex-wrap gap-3 items-start">
 
                   <div className="relative w-[80px] h-[80px]">
                     <Image
@@ -556,12 +581,17 @@ export default function ChannelsNetwork() {
 
                   <div className={`flex flex-col gap-1 ${poppins.className}`}>
                       <h1 className={`${viga.className} text-gray-500`}>Name of channel</h1>
-                      <p className='max-w-[270px] overflow-x-auto whitespace-nowrap text-left'>{selected.channelname}</p>
+                      <p className='max-w-[270px] overflow-x-auto whitespace-nowrap text-left'>{selected.nom}</p>
                   </div>
 
                   <div className={`flex flex-col gap-1 ${poppins.className}`}>
                       <h1 className={`${viga.className} text-gray-500`}>Created at (dd/mm/yyyy)</h1>
                       <p>{transformDateAddOneDay(selected.date_creation)}</p>
+                  </div>
+
+                  <div className={`flex flex-col gap-1 ${poppins.className}`}>
+                      <h1 className={`${viga.className} text-gray-500`}>Number of subscribers</h1>
+                      <p className='max-w-[270px] overflow-x-auto whitespace-nowrap text-left'>{selected.nombre_abonnes_total}</p>
                   </div>
 
                   <a

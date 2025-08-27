@@ -18,7 +18,9 @@ export async function POST(request) {
 
     //console.log("The received body :",body)
 
-    const { collectionDate, creationDateFrom, creationDateTo, statChoice, order } = body
+    const { 
+      //collectionDate, 
+      creationDateFrom, creationDateTo, statChoice, order } = body
 
     let query = `
       SELECT * FROM chaines
@@ -37,10 +39,11 @@ export async function POST(request) {
       conditions.push(`date_creation <= $${values.length}`)
     }
 
-    if (collectionDate) {
-      values.push(collectionDate)
+   /* if (collectionDate) {
+     values.push(collectionDate)
       conditions.push(`date_releve_chaine = $${values.length}`)
     }
+    */
 
     if (conditions.length > 0) {
       query += ' WHERE ' + conditions.join(' AND ')

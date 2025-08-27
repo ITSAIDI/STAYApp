@@ -49,7 +49,7 @@ const collectionDateList = [
 export default function ChannelsLeaderboard() {
   const [statChoice,setStatChoice] = useState()
   const [order,setOrder] = useState()
-  const [collectionDate,setCollectionDate] = useState()
+  //const [collectionDate,setCollectionDate] = useState()
   const [creationDateFrom,setCreationDateFrom] = useState()
   const [creationDateTo,setCreationDateTo] = useState()
 
@@ -111,7 +111,7 @@ export default function ChannelsLeaderboard() {
         body: JSON.stringify(
           { statChoice,
             order,
-            collectionDate,
+            //collectionDate,
             creationDateFrom: formatDate(creationDateFrom),
             creationDateTo: formatDate(creationDateTo)
           }),
@@ -131,7 +131,12 @@ export default function ChannelsLeaderboard() {
 
   useEffect(()=>{initChannels();},[])
 
-  useEffect(()=>{getFiltering();},[statChoice,order,collectionDate,creationDateFrom,creationDateTo])
+  useEffect(()=>{getFiltering();},[
+    statChoice,
+    order,
+    //collectionDate,
+    creationDateFrom,
+    creationDateTo])
 
   useEffect(()=>{
     if (debounceTimeout.current) clearTimeout(debounceTimeout.current) // clear the previous timing
@@ -165,8 +170,8 @@ export default function ChannelsLeaderboard() {
         <div className="flex flex-wrap gap-3 mt-2 items-baseline-last">
             <Combobox value = {statChoice} setValue={setStatChoice} itemsList={sortingList} text={"Sort channels"}/>
             <Combobox value = {order} setValue={setOrder} itemsList={orderingList} text={"Select order"} />
-            <Combobox value = {collectionDate} setValue={setCollectionDate} itemsList={collectionDateList} text={"Collection Date"} />
-            <Calendar22 title={'Creation Date (From)'} date={creationDateFrom} setDate={setCreationDateFrom}/>
+            {/*<Combobox value = {collectionDate} setValue={setCollectionDate} itemsList={collectionDateList} text={"Collection Date"} />
+            <Calendar22 title={'Creation Date (From)'} date={creationDateFrom} setDate={setCreationDateFrom}/>*/}
             <Calendar22 title={'Creation Date (To)'} date={creationDateTo} setDate={setCreationDateTo}/>
         </div>
 

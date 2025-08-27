@@ -43,7 +43,7 @@ export default function VideosLeaderboard() {
   const [order,setOrder] = useState()
   const [publicationDateFrom,setpublicationDateFrom] = useState()
   const [publicationDateTo,setpublicationDateTo] = useState()
-  const [collectionDate,setCollectionDate] = useState()
+  //const [collectionDate,setCollectionDate] = useState()
 
   const formatDate = (date) => date?.toLocaleDateString('fr-CA')
   //formatDate used to format the calendar date into a format accepted by PogreSQL (CA for canadian Format yyyy-mm-dd)
@@ -100,7 +100,7 @@ export default function VideosLeaderboard() {
         body: JSON.stringify(
           { statChoice,
             order,
-            collectionDate,
+            //collectionDate,
             publicationDateFrom: formatDate(publicationDateFrom),
             publicationDateTo: formatDate(publicationDateTo)
           }),
@@ -125,7 +125,12 @@ export default function VideosLeaderboard() {
                                         ) 
     // Wait 300 ms before sending the request to avoid extra and unuseful requests.
   },[query])
-  useEffect(()=>{getFiltering();},[statChoice,order,collectionDate,publicationDateFrom,publicationDateTo])
+  useEffect(()=>{getFiltering();},[
+    statChoice,
+    order,
+    //collectionDate,
+    publicationDateFrom,
+    publicationDateTo])
   useEffect(()=>{initVideos();},[])
 
 
@@ -151,7 +156,7 @@ export default function VideosLeaderboard() {
         <div className="flex flex-wrap gap-2 mt-2 items-baseline-last">
             <Combobox value = {statChoice} setValue={setStatChoice} itemsList={sortingList} text={"Sort videos"}/>
             <Combobox value = {order} setValue={setOrder} itemsList={orderingList} text={"Select order"} />
-            <Combobox value = {collectionDate} setValue={setCollectionDate} itemsList={collectionDateList} text={"Collection Date"} />
+            {/*<Combobox value = {collectionDate} setValue={setCollectionDate} itemsList={collectionDateList} text={"Collection Date"} />*/}
             <Calendar22 title={'Publication Date (From)'} date={publicationDateFrom} setDate={setpublicationDateFrom}/>
             <Calendar22 title={'Publication Date (To)'} date={publicationDateTo} setDate={setpublicationDateTo}/>
           </div>
