@@ -20,8 +20,8 @@ export async function GET() {
         const Query = `
         select * from chaines  
         inner join chaines_metriques 
-        on chaines.id_chaine =  chaines_metriques.id_chaine and date_releve_chaine = '2025-05-19'
-        limit 10;
+        ON chaines.id_chaine =  chaines_metriques.id_chaine 
+        WHERE date_releve_chaine = (SELECT MAX(date_releve_chaine) FROM chaines_metriques)
         `
 
         const results = await client.query(Query)

@@ -25,6 +25,7 @@ export async function POST(request) {
     let query = `
       SELECT * FROM chaines
       INNER JOIN chaines_metriques ON chaines.id_chaine = chaines_metriques.id_chaine
+      WHERE date_releve_chaine = (SELECT MAX(date_releve_chaine) FROM chaines_metriques)
     `
     const conditions = []
     const values = []

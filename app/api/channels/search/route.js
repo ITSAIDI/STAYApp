@@ -28,7 +28,7 @@ export async function GET(request) {
       `
         select * from chaines  inner join chaines_metriques  
         on chaines.id_chaine =  chaines_metriques.id_chaine  
-        where lower(chaines.nom) like $1 
+        where lower(chaines.nom) like $1 AND date_releve_chaine = (SELECT MAX(date_releve_chaine) FROM chaines_metriques)
         order by chaines.nom  
         limit 5;
       `,
