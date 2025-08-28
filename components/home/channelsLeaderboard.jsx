@@ -39,12 +39,6 @@ const orderingList = [
   }
 ]
 
-const collectionDateList = [
-  {
-    value: "2025-05-19", // YYYY-MM-DD format adapted to what PostgreSQL requires.
-    label: "19/05/2025", // What the user see
-  },
-]
 
 export default function ChannelsLeaderboard() {
   const [statChoice,setStatChoice] = useState()
@@ -147,6 +141,7 @@ export default function ChannelsLeaderboard() {
     // Wait 300 ms before sending the request to avoid extra and unuseful requests.
   },[query])
   
+ console.log('channels : ',channels)
 
   return (
     <div className='flex flex-col bg-white rounded-lg mt-2 p-2 w-full mb-2'>
@@ -179,7 +174,7 @@ export default function ChannelsLeaderboard() {
         {/* Channels list */}
         <div className="flex flex-col items-start overflow-y-scroll max-h-svh scrollbar scrollbar-thumb-green1 scrollbar-track-white overflow-x-hidden">
           {
-            channels.map((channel,index)=>
+            [...new Map(channels.map(ch => [ch.id_chaine, ch])).values()].map((channel,index)=>
             (
               <ChannelSection
               key={channel.id_chaine}
