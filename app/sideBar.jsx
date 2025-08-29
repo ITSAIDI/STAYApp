@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 
 import { viga,poppins } from "@/fonts";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouse,faClock,faHexagonNodes,faMapLocationDot,faLightbulb } from '@fortawesome/free-solid-svg-icons';
+import { faHouse,faClock,faHexagonNodes,faMapLocationDot,faLightbulb,faUser } from '@fortawesome/free-solid-svg-icons';
 import Image from 'next/image'
 
 
@@ -25,6 +25,7 @@ export default function SideBar() {
     'Networks',
     'Spatial analysis',
     'Semantic analysis',
+    'User manual'
   ];
  const icons = [
     faHouse,
@@ -32,6 +33,7 @@ export default function SideBar() {
     faHexagonNodes,
     faMapLocationDot,
     faLightbulb,
+    faUser,
  ]
   return (
     <div className='bg-gray-200 w-[20%] flex flex-col items-center p-2  rounded-lg min-w-[230px]'>
