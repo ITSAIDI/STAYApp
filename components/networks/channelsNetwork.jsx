@@ -154,9 +154,8 @@ export default function ChannelsNetwork() {
     if(!addDisabled  && selected)
     {
       const addingData = await getAddChannel();
-      updateNetwork(addingData);
-      //console.log('addingData : ',addingData);
-
+      if (addingData.length > 0) updateNetwork(addingData);
+      else alert(`${selected.nom} has no mentions try adding another channel`);
       resetUI();
     }
   }
@@ -336,6 +335,7 @@ const link = container.append('g')
   .data(links)
   .enter().append('path')
   .attr('d', d => {
+    if (!d.source.x || !d.target.x) return null;
     const dx = d.target.x - d.source.x
     const dy = d.target.y - d.source.y
     const dr = Math.sqrt(dx * dx + dy * dy) * 1.5  // curve radius
@@ -411,6 +411,7 @@ const link = container.append('g')
 
     simulation.on('tick', () => {
       link.attr('d', d => {
+        if (!d.source.x || !d.target.x) return null;
         const dx = d.target.x - d.source.x
         const dy = d.target.y - d.source.y
         const dr = Math.sqrt(dx * dx + dy * dy) * 1.5 // curve radius
@@ -439,7 +440,7 @@ const link = container.append('g')
   {
     // To adjust the vx vy NaN issue We need to map source and target to existing nodes in the State.
 
-    if(nodes)
+    if(nodes && links)
     {
       const nodeById = new Map(nodes.map(n => [n.id, n]));
       const fixedLinks = links.map(l => ({
@@ -455,7 +456,7 @@ const link = container.append('g')
 
   
   //console.log('Selected Channel :',selected);
-  //console.log('Nodes :',nodes);
+  console.log('Nodes :',nodes);
   //console.log('Links :',links);
   console.log('channelsList :',channelsList);
 

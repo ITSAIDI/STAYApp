@@ -3,7 +3,7 @@
 import { viga } from '@/fonts'
 import * as d3 from 'd3'
 import { useEffect, useRef,useState } from 'react'
-import { faCirclePlus, faTrash,faRotateLeft } from "@fortawesome/free-solid-svg-icons";
+import { faCirclePlus, faTrash,faRotateLeft,faExpand } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ThreeDot } from "react-loading-indicators"
 
@@ -30,9 +30,9 @@ export default function NetworkComp({words,loading,setLoading}) {
   const [removeDisabled,setRemoveDisabled] = useState(true)
   const [addDisabled,setAddDisabled] = useState(true)
   const [cancelDisabled,setCancelDisabled] = useState(true)
+  const [expandDisabled,setExpandDisabled] = useState(true)
 
   //const [firstRun, setFirstRun] = useState(true);
-
 
 
   useEffect(()=>{
@@ -106,7 +106,7 @@ export default function NetworkComp({words,loading,setLoading}) {
           setSelected(d.id);
           setRemoveDisabled(false);
           setCancelDisabled(false);
-          setAddDisabled(false);
+          setExpandDisabled(false);
         })
       .call(d3.drag()
         .on('start', (event, d) => {
@@ -189,7 +189,7 @@ export default function NetworkComp({words,loading,setLoading}) {
   
   async function getKeywordLinks() {
     try {
-      const response = await fetch('/api/semantic_analysis/keywordsNetwork/keyword',
+      const response = await fetch('/api/semantic_analysis/keywordsNetwork/addExpand',
         {
           method:'POST',
           headers :{ 'Content-Type': 'application/json' },
@@ -248,14 +248,15 @@ export default function NetworkComp({words,loading,setLoading}) {
     setRemoveDisabled(true);
     setAddDisabled(true);
     setCancelDisabled(true);
+    setExpandDisabled(true);
     setSelected(null);
     setClickedNode(null);
     setQuery('');
   }
 
-  async function handleAdd()
+  async function handleAddExpand()
   {
-    if(addDisabled==false && selected)
+    if((addDisabled==false || expandDisabled == false ) && selected)
     {
 
       resetUI()
@@ -391,6 +392,7 @@ export default function NetworkComp({words,loading,setLoading}) {
           )}
         </div>
 
+
         {/* Add, Remove, Cancel buttons */}
         <div className="flex flex-row gap-2 items-center mt-2">
 
@@ -422,7 +424,7 @@ export default function NetworkComp({words,loading,setLoading}) {
           </button>
 
           <button
-          onClick={()=>{handleAdd();}}
+          onClick={()=>{handleAddExpand();}}
           disabled= {addDisabled}
           >
             
@@ -434,6 +436,20 @@ export default function NetworkComp({words,loading,setLoading}) {
                     : 'text-green-400 hover:text-green-500 active:scale-85'
                 }`}
               />
+          </button>
+
+          <button
+          onClick={()=>{handleAddExpand();}}
+          disabled= {expandDisabled}
+          >
+            <FontAwesomeIcon
+              icon={faExpand}
+              className={`text-[20px] transition-all duration-300 ${
+                expandDisabled
+                  ? 'text-gray-300'
+                  : 'text-yellow-400 hover:text-yellow-500 active:scale-85'
+              }`}
+            />
           </button>
 
           <h1 className={`${viga.className} text-green1`}>{selected}</h1>
