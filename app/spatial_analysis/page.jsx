@@ -12,6 +12,12 @@ const MapComponent = dynamic(() => import('../../components/spatial_analysis/Map
 
 
 export default function SpatialAnalysis() {
+
+    const description = 
+  `* Circles represent clusters of geolocations.
+   * Hovering over a cluster shows a small card with all unique tags and their frequency.
+   --> Go to User_manual User manual for more details.
+  `
   
   const [spatialEntities,setSpatialEntities] = useState([])
 
@@ -38,7 +44,7 @@ export default function SpatialAnalysis() {
       
       <div className='flex flex-row gap-1'>
         <h1 className={`${viga.className} text-green1`}>Self-sufficiency cartography-videos</h1>
-        <InfoBull information={"This cartography is based on the detected french locations from videos metadata "} />
+        <InfoBull information={description} />
       </div>
       
       <MapComponent entities = {spatialEntities}/>

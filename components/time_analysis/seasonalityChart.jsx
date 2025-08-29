@@ -17,6 +17,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import { viga } from "@/fonts"
+import InfoBull from "../ui/infoBull"
 
 
 export function SeasonalityChart({ chartInfos, chartData }) {
@@ -29,8 +30,10 @@ export function SeasonalityChart({ chartInfos, chartData }) {
     <Card data-chart={id} className="flex flex-col">
       <ChartStyle id={id} config={chartInfos.chartConfig} />
       <CardHeader className="space-y-0 pb-0">
-        <CardTitle>{chartInfos.charTitle}</CardTitle>
-        <CardDescription>{chartInfos.description}</CardDescription>
+          <div className='flex flex-row gap-1'>
+              <h1 className = {`${viga.className} text-lg text-green1`}>{chartInfos.charTitle}</h1>
+              <InfoBull information={chartInfos.description} />
+          </div>
       </CardHeader>
 
       <CardContent className="flex justify-center">

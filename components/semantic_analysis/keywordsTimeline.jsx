@@ -5,7 +5,7 @@ import { faCircleXmark } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useEffect,useState,useRef } from "react"
 import { ThreeDot } from "react-loading-indicators"
-
+import InfoBull from '@/components/ui/infoBull';
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 import {
   Card,
@@ -20,6 +20,13 @@ import {
 
 
 export default function KeywordsTimeline({loading,setLoading}) {
+
+    const description = 
+    ` * The Keywords Timelines plot shows the number of times a keyword appears in video tags over time.
+      * Hovering on the line displays the number of mentions of the keyword in each year.
+      X_Button removes a keyword from the selection bar if it is not of interest.
+      --> Go to User_manual User manual for more details
+    `
 
     let tagsInit = useRef(null)
     const [selectedTags,setSelectedTags] = useState(['autosuffisance'])
@@ -244,7 +251,11 @@ export default function KeywordsTimeline({loading,setLoading}) {
     <div className="flex flex-col bg-white rounded-sm p-2 gap-2 w-full h-full">
       
         {/* Title */}
-        <h1 className = {`${viga.className} text-xl text-green1`}>Keywords Timelines</h1>
+        <div className='flex flex-row gap-1'>
+            <h1 className = {`${viga.className} text-xl text-green1`}>Keywords Timelines</h1>
+            <InfoBull information={description} />
+        </div>
+        
 
         {loading ? 
          (

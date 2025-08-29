@@ -5,7 +5,6 @@ import {
   Card,
   CardContent,
   CardHeader,
-  CardTitle, CardDescription
 } from "@/components/ui/card"
 
 import {
@@ -17,7 +16,7 @@ import {viga } from "@/fonts"
 import { Combobox } from "../home/combobox"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useState } from "react"
-
+import InfoBull from "../ui/infoBull"
 
 export default function VideosChart({chartInfos,categoryState,categoryFunction,events,showEvents,chartDataLarge,chartDataSmall,chartDataMedium}) {
 
@@ -102,7 +101,7 @@ export default function VideosChart({chartInfos,categoryState,categoryFunction,e
 
   //console.log('chartData  : ',chartData)
   //console.log('chartDataCumul  : ',chartDataCumul)
-  console.log('data ',data)
+  //console.log('data ',data)
 
   const chartConfig = {
   default: {
@@ -131,10 +130,11 @@ export default function VideosChart({chartInfos,categoryState,categoryFunction,e
     <Card className='w-full h-full' >
       <CardHeader className='flex flex-col gap-2'>
         <div className="flex flex-row justify-between items-center w-full">
-           <div className="flex flex-col gap-2">
-              <CardTitle>{chartInfos.charTitle}</CardTitle>
-              <CardDescription>{chartInfos.description}</CardDescription>
-            </div>
+          {/* Title */}
+          <div className='flex flex-row gap-1'>
+              <h1 className = {`${viga.className} text-lg text-green1`}>{chartInfos.charTitle}</h1>
+              <InfoBull information={chartInfos.description} />
+          </div>
             
             <div className="flex flex-row gap-2 mt-2 items-center">
               <Checkbox 

@@ -5,9 +5,19 @@ import { ThreeDot } from "react-loading-indicators"
 import { WordCloudComponent } from "./WordCloudComponent";
 import { debounce } from "lodash";
 import { viga } from "@/fonts";
-
+import InfoBull from '@/components/ui/infoBull';
 
 export default function KeywordsCloud({loading,setLoading}) {
+
+  const description = 
+  ` * The Keywords Cloud is based on video tags and their frequencies.
+    * The initial cloud shows a random selection of 21 tags.
+    Add_Button inserts a selected keyword into the existing cloud.
+    Delete_Button removes a keyword from the cloud when clicked.
+    Cancel_Button turns off Add_Button and Delete_Button and clears the search bar.
+    --> Go to User_manual User manual for more details
+  `
+
     let tagsInit = useRef(null)
     const [tagsSorted,setTagsSorted] = useState(null)
     const [maxValue, setMaxValue] = useState([1])
@@ -75,8 +85,10 @@ export default function KeywordsCloud({loading,setLoading}) {
   return (
     <div className="bg-white p-2 rounded-sm h-full">
         {/* Title */}
-        <h1 className = {`${viga.className} text-xl text-green1`}>Keywords Cloud</h1>
-
+        <div className='flex flex-row gap-1'>
+          <h1 className = {`${viga.className} text-xl text-green1`}>Keywords Cloud</h1>
+          <InfoBull information={description} />
+        </div>
          {loading ? 
          (
            <div className="flex items-center justify-center h-full w-full">

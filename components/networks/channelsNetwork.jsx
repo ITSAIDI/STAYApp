@@ -12,12 +12,13 @@ import { faYoutube } from '@fortawesome/free-brands-svg-icons'
 
 export default function ChannelsNetwork() {
   const description = 
-  `* This network represents the relationships between channels. 
-  * A node is a channel, an edge is mentions from source to target channel ( in the title, description, or tags of videos from the source channel).
-  Expand_Button featch the most 5 mentioned channels by the clicked channel (Source).
-  Add_Button featch 10 edges in witch added channel is a Source or Target.
-  Cancel_Button undo an action
-  Delete_Button delete a clicked channel
+  `* The channels network shows relationships between YouTube channels based on mentions in video metadata.
+   * Nodes represent channels; arrows indicate mentions, with red for high frequency and green for low.
+    Add_Button inserts a selected channel as a node along with up to 10 top links based on mentions.
+    Expand_Button adds connections to an existing node based on its top mentions.
+    Delete_Button removes a node and all its connected links from the network.
+    Cancel_Button clears selection, turns off add/expand/delete modes, and resets the search bar.
+    --> Go to User_manual User manual for more details.
   `
   const [nodes, setNodes] = useState(null);
   const [links, setLinks] = useState(null);
@@ -149,9 +150,9 @@ export default function ChannelsNetwork() {
 
   }
 
-  async function handleAdd()
+  async function handleAddExpand()
   {
-    if(!addDisabled  && selected)
+    if((!addDisabled || !expandDisabled )  && selected)
     {
       const addingData = await getAddChannel();
       if (addingData.length > 0) updateNetwork(addingData);
@@ -175,20 +176,6 @@ export default function ChannelsNetwork() {
       
     }
     
-  }
-
-  async function handleExpand()
-  {
-    if(!expandDisabled  && selected)
-    {
-      const expandData = await getExpandChannel();
-      updateNetwork(expandData)
-      
-      //console.log('newNodes  :',newNodes);
-      //console.log('newLinks  :',newLinks);
-    }
-
-   resetUI();
   }
 
   // Refs for the Network SVG  
@@ -234,30 +221,11 @@ export default function ChannelsNetwork() {
     console.log('Error while fetching mentions data:', error);
   }
 }
-  async function getExpandChannel() {
-    // Featch the 5 most mentionned channels by the expanded channel
-    try {
-      const response = await fetch('api/networks/expand', 
-        {
-          method:'POST',
-          headers :{ 'Content-Type': 'application/json' },
-          body: JSON.stringify({channelID:selected.id_chaine})
-        });
-      const data = await response.json();
-
-      console.log('Expand  :',data);
-      
-      return data;
-      
-    } catch (error) {
-      console.log('Error while fetching channel childs:', error);
-    }
-  }
 
   async function getAddChannel() {
     // Featch the 10 most height number of mentions links where channel is Source/Destination
     try {
-      const response = await fetch('api/networks/add', 
+      const response = await fetch('api/networks/addExpand', 
         {
           method:'POST',
           headers :{ 'Content-Type': 'application/json' },
@@ -456,9 +424,9 @@ const link = container.append('g')
 
   
   //console.log('Selected Channel :',selected);
-  console.log('Nodes :',nodes);
+  //console.log('Nodes :',nodes);
   //console.log('Links :',links);
-  console.log('channelsList :',channelsList);
+  //console.log('channelsList :',channelsList);
 
   return (
     <div className="bg-white h-[1100px] w-full p-2 rounded-sm">
@@ -532,7 +500,7 @@ const link = container.append('g')
                 </button>
       
                 <button
-                onClick={()=>{handleAdd();}}
+                onClick={()=>{handleAddExpand();}}
                 disabled= {addDisabled}
                 >
                   
@@ -547,7 +515,7 @@ const link = container.append('g')
                 </button>
 
                 <button
-                onClick={()=>{handleExpand();}}
+                onClick={()=>{handleAddExpand();}}
                 disabled= {expandDisabled}
                 >
                   <FontAwesomeIcon

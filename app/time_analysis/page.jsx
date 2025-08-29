@@ -78,34 +78,52 @@ export default function time_analysis() {
   const channelsMetadata = {
     charTitle : 'Channels by year',
     label:'Channels',
-    description :"Number of channels created on each year",
+    description : `* The pertinent channels in the database are grouped by year of creation.
+    --> Go to User_manual User manual for more details
+    `,
     categories:[]
   }
   const videosMetadata = {
     charTitle : 'Videos by year',
     label:'Videos',
-    description :"Number of videos published each year",
+    description :
+    `
+    * The pertinent videos in the database are grouped by year of publication, and the results are shown in the plot.
+    * Large Channels have more than 13000 subscribers.
+    * Medium Channels have between 600 and 13000 subscribers.
+    * Small Channels have less than 600 subscribers.
+    --> Go to User_manual User manual for more details.
+    `,
     categories:[]
   }
 
   const commentsMetadata = {
     charTitle : 'Comments by year',
     label:'Comments',
-    description :"Number of comments published each year",
+    description :`* Number of comments grouped by year of publication.
+    --> Go to User_manual User manual for more details
+    `,
     categories:[]
   }
 
   const durationsMetadata = {
     charTitle : 'Duration by year',
     label:'Average duration (s)',
-    description :"Average duration in seconds of videos published each year",
+    description :
+    `* Average duration in seconds of videos published each year.
+    --> Go to User_manual User manual for more details
+    `,
     categories:[]
   }
 
   const channelSeasonalityMetadata = {
     charTitle : 'Channels Seasonality',
     label:'Channels',
-    description :"Number of channels created on each season",
+    description :
+    `* Number of channels created on each season.
+    --> Go to User_manual User manual for more details
+    `,
+
     colors :{
         winter: '#7af0a8',
         spring: '#227E51',
@@ -131,7 +149,10 @@ export default function time_analysis() {
   const videoSeasonalityMetadata = {
     charTitle : 'Videos Seasonality',
     label:'Videos',
-    description :"Number of videos published on each season",
+    description :
+     `* Number of videos published on each season.
+    --> Go to User_manual User manual for more details
+    `,
     colors :{
         winter: '#7af0a8',
         spring: '#227E51',

@@ -5,7 +5,6 @@ import {
   Card,
   CardContent,
   CardHeader,
-  CardTitle, CardDescription
 } from "@/components/ui/card"
 
 import {
@@ -17,7 +16,7 @@ import {viga } from "@/fonts"
 import { Combobox } from "../home/combobox"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useState } from "react"
-
+import InfoBull from '@/components/ui/infoBull';
 
 export default function TimeChart({chartInfos,chartData,categoryState,categoryFunction,events,showEvents,showCumulOption =false}) {
 
@@ -73,9 +72,11 @@ export default function TimeChart({chartInfos,chartData,categoryState,categoryFu
   return (
     <Card className='w-full h-full' >
       <CardHeader className='flex flex-wrap justify-between'>
-        <div className="flex flex-col gap-2">
-          <CardTitle>{chartInfos.charTitle}</CardTitle>
-          <CardDescription>{chartInfos.description}</CardDescription>
+
+        {/* Title */}
+        <div className='flex flex-row gap-1'>
+            <h1 className = {`${viga.className} text-lg text-green1`}>{chartInfos.charTitle}</h1>
+            <InfoBull information={chartInfos.description} />
         </div>
         
         {(chartInfos.categories.length > 0) &&

@@ -141,7 +141,7 @@ export default function ChannelsLeaderboard() {
     // Wait 300 ms before sending the request to avoid extra and unuseful requests.
   },[query])
   
- console.log('channels : ',channels)
+   //console.log('channels : ',channels)
 
   return (
     <div className='flex flex-col bg-white rounded-lg mt-2 p-2 w-full mb-2'>
