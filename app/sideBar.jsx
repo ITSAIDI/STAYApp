@@ -1,6 +1,6 @@
 'use client'
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState,useEffect } from 'react';
+import { useRouter,usePathname} from 'next/navigation';
 
 import { viga,poppins } from "@/fonts";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,8 +11,17 @@ import Image from 'next/image'
 
 
 export default function SideBar() {
-  const [activeTab, setActiveTab] = useState('Home');
   const router = useRouter();
+  const pathname = usePathname();
+  const [activeTab, setActiveTab] = useState('');
+
+  // Sync active tab with current URL on load and when pathname changes
+  useEffect(() => {
+    const match = tabs.find(
+      (tab) => pathname === `/${tab.toLowerCase().replace(' ', '_')}`
+    );
+    setActiveTab(match || 'Home');
+  }, [pathname]);
 
   function handleClick(theTab){
    setActiveTab(theTab);
