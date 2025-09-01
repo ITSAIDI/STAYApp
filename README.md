@@ -30,6 +30,9 @@ The project also contributes to the creation of a **FAIR** (**Findable, Accessib
     <img src="./assets/pipeline.jpg" alt="STAY pipeline"/>
 </p>
 
+## Try the app
+The application is hosted in INRAE cloud server you can reach it by clciking [here](http://195.220.87.137/home)
+
 ## Demo
 
 <a href="https://www.youtube.com/watch?v=GrcDQiGxUqw" target="_blank">
