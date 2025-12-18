@@ -31,6 +31,8 @@ The project also contributes to the creation of a **FAIR** (**Findable, Accessib
 </p>
 
 ## Try the app
+
+**⚠️ The app is unaccessible for the moment because of maintenance**
 The application is hosted in INRAE cloud server you can reach it by clciking [here](http://195.220.87.137/home)
 
 ## Demo
